@@ -1,0 +1,64 @@
+services:
+  caddy:
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8025:8025"
+
+  web:
+    build:
+      target: dev
+    environment:
+      NUXT_PUBLIC_SITE_URL: https://localhost
+      NUXT_VITE_HMR_CLIENT_PORT: "443"
+    command: ["pnpm", "dev", "--host", "0.0.0.0", "--port", "3000"]
+    volumes:
+      - ../frontend:/app
+      - web_node_modules:/app/node_modules
+
+  api:
+    build:
+      target: dev
+    environment:
+      ENVIRONMENT: development
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+    command:
+      [
+        "uvicorn",
+        "app.main:app",
+        "--reload",
+        "--reload-dir",
+        "app",
+        "--host",
+        "0.0.0.0",
+        "--proxy-headers",
+        "--forwarded-allow-ips=*",
+      ]
+    volumes:
+      - ../backend:/app
+      - media:/srv/media
+
+  worker:
+    build:
+      target: dev
+    environment:
+      ENVIRONMENT: development
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+    volumes:
+      - ../backend:/app
+      - media:/srv/media
+
+  mailpit:
+    image: axllent/mailpit:v1.31.3
+    restart: unless-stopped
+    networks: [internal]
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  web_node_modules:

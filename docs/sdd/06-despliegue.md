@@ -11,13 +11,13 @@
 
 | Servicio | Imagen | Puerto interno | Volúmenes | Healthcheck |
 |----------|--------|----------------|-----------|-------------|
-| `caddy` | `caddy:2-alpine` | 80, 443 (expuestos) | `caddy_data`, `caddy_config`, `media:ro` | — |
+| `caddy` | `caddy:2.11.4-alpine` | 80, 443 (expuestos) | `caddy_data`, `caddy_config`, `media:ro` | — |
 | `web` | `ghcr.io/saea98/pagina_ram-web` | 3000 | — | `GET /` |
 | `api` | `ghcr.io/saea98/pagina_ram-api` | 8000 | `media` | `GET /api/ready` |
 | `worker` | misma que `api` (`command: python -m app.workers`) | — | `media` | proceso vivo |
-| `db` | `postgres:17-alpine` | 5432 (solo red interna) | `pg_data` | `pg_isready` |
-| `backup` | `postgres:17-alpine` + cron | — | `backups`, `media:ro` | — |
-| `mailpit` | solo dev | 8025 | — | — |
+| `db` | `postgres:17.11-alpine` | 5432 (solo red interna) | `pg_data` | `pg_isready` |
+| `backup` | `postgres:17.11-alpine` + cron | — | `backups`, `media:ro` | — |
+| `mailpit` | `axllent/mailpit:v1.31.3` (solo dev) | 8025 | — | — |
 | `umami` | Fase 2, perfil `analytics` | 3001 | — | — |
 
 Todos con `restart: unless-stopped` y rotación de logs (`max-size: 10m`, `max-file: 3`).

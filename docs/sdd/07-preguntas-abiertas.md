@@ -15,3 +15,7 @@
 | Q9 | ¿Quieren calendario de sesiones (Fase 2) con Google Calendar? | Fase 2. | Modelo `availability_blocks`. |
 | Q10 | ¿TikTok, YouTube, Spotify del estudio? | Solo Instagram. | Settings. |
 | Q11 | Mención “Ocho formas de trabajar tu proyecto” vs. 7 opciones en el select del template | El select se genera de la API (8 servicios + “Aún no estoy seguro”). | — |
+| Q12 | ¿Qué hace el worker antes de la cola de jobs (T-06)? | Proceso estable que espera SIGTERM y registra `worker_waiting`. No procesa medios. | Sustituir `python -m app.workers` por el loop real. |
+| Q13 | ¿Qué tags exactos de imágenes base usamos? | Parches fijados: Caddy `2.11.4`, Postgres `17.11`, Node `22.23.3`, Python `3.12.14`, uv `0.12.19`, Mailpit `v1.31.3`. | Cambiar el tag en Dockerfiles y compose. |
+| Q14 | ¿El Caddyfile de desarrollo incluye HSTS? | No. `infra/Caddyfile` sirve `localhost` con `tls internal`, sin HSTS. El bloque de producción de `06-despliegue.md` se aplica en T-25. | Añadir cabeceras al pasar a producción. |
+| Q15 | ¿Las imágenes de desarrollo corren sin root? | El target `runtime` sí (usuario `app` / `node`). El target `dev` corre como root para que el hot reload escriba en el bind mount. | Endurecer el target `dev` si el equipo lo pide. |

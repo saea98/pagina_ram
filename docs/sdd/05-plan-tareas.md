@@ -5,7 +5,7 @@
 
 ## Hito 0 · Cimientos
 
-- [ ] **T-01 · Scaffold del monorepo** — `frontend/` (Nuxt 4 + TS + pnpm), `backend/` (FastAPI + uv), `infra/`. Linters: ruff, mypy, eslint (config Nuxt), prettier, vue-tsc. `pre-commit` con hooks. *Salida:* `pnpm lint`, `uv run ruff check`, `uv run mypy` corren limpios.
+- [x] **T-01 · Scaffold del monorepo** — `frontend/` (Nuxt 4 + TS + pnpm), `backend/` (FastAPI + uv), `infra/`. Linters: ruff, mypy, eslint (config Nuxt), prettier, vue-tsc. `pre-commit` con hooks. *Salida:* `pnpm lint`, `uv run ruff check`, `uv run mypy` corren limpios.
 - [ ] **T-02 · Docker Compose dev** — servicios `caddy`, `web`, `api`, `worker`, `db`; hot‑reload en `web` y `api`; `.env.example`. *Salida:* `docker compose -f infra/docker-compose.yml -f infra/docker-compose.dev.yml up` sirve `https://localhost` (Caddy interno) con página “hola” y `/api/health` = 200.
 - [ ] **T-03 · Backend base** — config con `pydantic-settings`, sesión async SQLAlchemy, Alembic, logging JSON, manejo de errores con formato de `04-api.md`, `/api/health`, `/api/ready`. Tests con `pytest` + BD de prueba en contenedor. *Salida:* `pytest` verde en CI.
 - [ ] **T-04 · CI GitHub Actions** — jobs: lint+test backend, lint+typecheck+test frontend, build de imágenes. *Salida:* PR muestra checks verdes.
