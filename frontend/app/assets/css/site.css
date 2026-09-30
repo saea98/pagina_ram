@@ -1070,7 +1070,7 @@ footer.site-foot a:hover {
   border: 1px solid var(--line-light);
   border-radius: 14px;
   padding: 22px 24px;
-  font-size: 0.98rem;
+  font-size: 1.125rem;
   color: #2c1214;
   margin-bottom: 44px;
 }
@@ -1078,8 +1078,16 @@ footer.site-foot a:hover {
   margin-top: 56px;
   padding-top: 20px;
   border-top: 1px solid var(--line-light);
-  font-size: 0.88rem;
+  font-size: 1rem;
   color: #6b4a4c;
+}
+.legal-doc h2 {
+  font-size: 1.55rem;
+}
+.legal-doc p,
+.legal-doc li {
+  font-size: 1.125rem;
+  line-height: 1.75;
 }
 .prose h2 {
   font-size: 1.35rem;
