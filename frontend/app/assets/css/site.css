@@ -1131,25 +1131,50 @@ footer.site-foot a:hover {
   color: var(--cream);
   border-color: var(--maroon);
 }
+html.show-splash {
+  overflow: hidden;
+}
 .splash {
+  display: none;
   position: fixed;
   inset: 0;
-  z-index: 80;
+  z-index: 9999;
   background: var(--maroon);
-  display: flex;
   align-items: center;
   justify-content: center;
+  opacity: 1;
+  transition: opacity 0.9s ease;
 }
-.splash img {
+html.show-splash .splash {
+  display: flex;
+}
+.splash.splash-hide {
+  opacity: 0;
+  pointer-events: none;
+}
+.splash-logo {
+  display: flex;
+  align-items: center;
+  transform-origin: center center;
+  transition: transform 1.05s cubic-bezier(0.65, 0, 0.35, 1);
+  will-change: transform;
+}
+.splash-logo img {
   height: 190px;
   width: auto;
+  flex: none;
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.4));
 }
 @media (max-width: 560px) {
-  .splash img {
+  .splash-logo img {
     height: 110px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  .splash,
+  .splash-logo {
+    transition: none;
+  }
   .splash {
     display: none;
   }
