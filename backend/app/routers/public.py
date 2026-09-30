@@ -5,6 +5,7 @@ from fastapi.responses import RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_session
+from app.core.deps import apply_preview
 from app.schemas.public import (
     BioLinkOut,
     FaqOut,
@@ -22,7 +23,11 @@ from app.schemas.public import (
 )
 from app.services import public_content
 
-router = APIRouter(prefix="/api/v1/public", tags=["public"])
+router = APIRouter(
+    prefix="/api/v1/public",
+    tags=["public"],
+    dependencies=[Depends(apply_preview)],
+)
 
 
 @router.get("/site", response_model=SitePublic)

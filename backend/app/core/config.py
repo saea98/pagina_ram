@@ -28,6 +28,9 @@ class Settings(BaseSettings):
     smtp_password: str = ""
     smtp_from: str = "Cherry Studios <no-reply@cherrystudios.com.mx>"
     turnstile_secret_key: str = ""
+    internal_revalidate_token: str = ""
+    web_internal_url: str = "http://web:3010"
+    public_site_url: str = "https://localhost"
 
 
 @lru_cache

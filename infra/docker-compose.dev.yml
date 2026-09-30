@@ -13,7 +13,7 @@ services:
     environment:
       NUXT_PUBLIC_SITE_URL: https://localhost
       NUXT_VITE_HMR_CLIENT_PORT: "443"
-    command: ["pnpm", "dev", "--host", "0.0.0.0", "--port", "3000"]
+    command: ["pnpm", "dev", "--host", "0.0.0.0", "--port", "3010"]
     volumes:
       - ../frontend:/app
       - web_node_modules:/app/node_modules

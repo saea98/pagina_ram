@@ -36,6 +36,8 @@ erDiagram
 | locked_until | timestamptz null | |
 | last_login_at | timestamptz null | |
 
+Tablas de sesión (no son contenido): `refresh_tokens` (hash, vence a 7 días, se revoca), `password_reset_tokens` (hash, 1 hora, un solo uso) y `preview_tokens` (hash, 2 horas, para ver borradores).
+
 ### `site_settings` (fila única, `id = 1`)
 | campo | tipo | notas |
 |-------|------|-------|

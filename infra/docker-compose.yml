@@ -35,11 +35,11 @@ services:
       NUXT_API_INTERNAL_URL: http://api:8000
       NUXT_PUBLIC_API_BASE: /api/v1
       HOST: 0.0.0.0
-      PORT: "3000"
+      PORT: "3010"
     networks: [internal]
     logging: *default-logging
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/"]
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3010/"]
       interval: 10s
       timeout: 5s
       retries: 12

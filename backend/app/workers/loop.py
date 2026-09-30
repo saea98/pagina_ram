@@ -63,6 +63,11 @@ async def _dispatch(storage: LocalStorage, job_type: JobType, payload: dict[str,
 
         await deliver(payload)
         return
+    if job_type is JobType.REVALIDATE:
+        from app.services.revalidate import deliver as revalidate
+
+        await revalidate(payload)
+        return
     media_id = UUID(str(payload["media_id"]))
     async with SessionMaker() as session:
         asset = await session.get(MediaAsset, media_id)

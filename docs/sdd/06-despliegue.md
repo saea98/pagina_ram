@@ -6,6 +6,7 @@
 - Docker Engine + plugin Compose v2.
 - Puertos 80 y 443 los publica **Nginx Proxy Manager** (`jc21/nginx-proxy-manager`), que ya atiende otros sitios. Cherry no los enlaza.
 - Caddy publica solo **HTTP `8090`** (`infra/docker-compose.server.yml` + `Caddyfile.server`). No pide certificado: el TLS lo termina NPM.
+- El frontend de Cherry escucha en el **3010** de la red interna. El 3000 del host lo usa otro proyecto; el 3001 queda reservado para Umami.
 - DNS: `A`/`AAAA` de `cherrystudios.com.mx` y `www` al servidor. En NPM, un proxy host del dominio hacia `http://127.0.0.1:8090`, con websockets activos.
 - 22 solo con llave SSH.
 
@@ -14,7 +15,7 @@
 | Servicio | Imagen | Puerto interno | Volúmenes | Healthcheck |
 |----------|--------|----------------|-----------|-------------|
 | `caddy` | `caddy:2.11.4-alpine` | 80 interno; en este servidor el host expone **8090**. En local, 80/443 | `caddy_data`, `caddy_config`, `media:ro` | — |
-| `web` | `ghcr.io/saea98/pagina_ram-web` | 3000 | — | `GET /` |
+| `web` | `ghcr.io/saea98/pagina_ram-web` | 3010 | — | `GET /` |
 | `api` | `ghcr.io/saea98/pagina_ram-api` | 8000 | `media` | `GET /api/ready` |
 | `worker` | misma que `api` (`command: python -m app.workers`) | — | `media` | proceso vivo |
 | `db` | `postgres:17.11-alpine` | 5432 (solo red interna) | `pg_data` | `pg_isready` |
@@ -89,7 +90,7 @@ En este servidor el archivo activo es `infra/Caddyfile.server` (solo `:80`, sin 
     reverse_proxy api:8000
   }
   handle {
-    reverse_proxy web:3000
+    reverse_proxy web:3010
   }
 
   redir /aviso-de-privacidad.html /aviso-de-privacidad permanent

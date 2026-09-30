@@ -83,9 +83,11 @@ Otros:
 | Método | Ruta | Descripción |
 |--------|------|-------------|
 | GET/PUT | `/settings` | Leer/actualizar `site_settings` completos |
-| POST | `/media` | Subir archivo (multipart) → `MediaAsset` (status `processing`) |
+| POST | `/media` | Subir archivo (multipart) → `MediaAsset` (status `processing`). Imagen exige `alt_text`. |
 | GET | `/media/{id}` | Estado y variantes (polling) |
+| PATCH | `/media/{id}` | Actualizar `alt_text` |
 | GET | `/media` | Biblioteca de medios, `?kind=image` |
+| POST | `/portfolio/inspect` | `{url}` → tipo, id externo, segundo de YouTube y, si responde, título del oEmbed |
 | GET | `/leads` | Filtros `status, service, utm_source, from, to, q` |
 | GET | `/leads/{id}` | Detalle + eventos |
 | PATCH | `/leads/{id}` | Cambiar `status` (genera `lead_event`) |
@@ -104,4 +106,4 @@ CRUD de usuarios, reset de contraseña, desactivar.
 |--------|------|-------|-------------|
 | GET | `/api/health` | Docker | Liveness |
 | GET | `/api/ready` | Docker | BD ok |
-| POST | `web:3000/api/_revalidate` | backend → frontend | `{paths: []}` con `X-Internal-Token` |
+| POST | `web:3010/api/_revalidate` | backend → frontend | `{paths: []}` con `X-Internal-Token` |

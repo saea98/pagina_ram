@@ -112,7 +112,7 @@ pagina_ram/
 ## 4. Flujo de datos y caché
 
 - **Páginas públicas:** Nuxt SSR pide a la API interna (`http://api:8000`) con `useFetch`. `routeRules` con **SWR de 60 s** para `/`, `/servicios/**`, `/portafolio/**`, `/links`. Cambios del admin aparecen en ≤ 60 s.
-- **Revalidación inmediata:** al guardar en admin, el backend llama `POST http://web:3000/api/_revalidate` (token interno) para purgar la caché de Nitro de las rutas afectadas.
+- **Revalidación inmediata:** al guardar en admin, el backend llama `POST http://web:3010/api/_revalidate` (token interno) para purgar la caché de Nitro de las rutas afectadas.
 - **API pública:** respuestas con `Cache-Control: public, max-age=60, stale-while-revalidate=300` y `ETag`.
 - **Medios:** nombres con hash de contenido → `Cache-Control: public, max-age=31536000, immutable` desde Caddy.
 - **Admin:** sin caché; `ssr: false` en `/admin/**`.

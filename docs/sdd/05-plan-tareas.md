@@ -31,13 +31,13 @@
 
 ## Hito 3 · Admin
 
-- [ ] **T-18 · Auth backend + frontend** — login, refresh, logout, forgot/reset, bloqueo, CSRF, middleware de ruta `/admin/**`. *RF-20.*
-- [ ] **T-19 · CRUD genérico admin** — patrón reutilizable (lista + form + reorder drag&drop + publicar) aplicado a servicios, equipo, portafolio, testimonios, FAQ, links. Selector de medios con subida y polling. *RF-22.* Ver skill `admin-cms`.
-- [ ] **T-20 · Ajustes del sitio** — formulario por secciones de `SiteSettingsSchema`, editor enriquecido (TipTap) para aviso de privacidad. Revalidación de caché al guardar. *RF-23.*
-- [ ] **T-21 · Bandeja de leads** — lista con filtros, detalle, cambio de estado, notas, reproducir/descargar maqueta, CSV, borrado ARCO. *RF-24.*
-- [ ] **T-22 · Dashboard** — tarjetas y gráficas simples (leads por estado/fuente, clics links, reproducciones). *RF-21.*
-- [ ] **T-23 · Usuarios (superadmin)** — *RF-25.*
-- [ ] **T-24 · Vista previa de borradores** — token de preview que permite ver contenido no publicado en el sitio público.
+- [x] **T-18 · Auth backend + frontend** — login, refresh, logout, forgot/reset, bloqueo, CSRF, middleware de ruta `/admin/**`. *RF-20.*
+- [x] **T-19 · CRUD genérico admin** — patrón reutilizable (lista + form + reorder drag&drop + publicar) aplicado a servicios, equipo, portafolio, testimonios, FAQ, links. Selector de medios con subida y polling. *RF-22.* Ver skill `admin-cms`.
+- [x] **T-20 · Ajustes del sitio** — formulario por secciones de `SiteSettingsSchema`, editor enriquecido (TipTap) para aviso de privacidad. Revalidación de caché al guardar. *RF-23.*
+- [x] **T-21 · Bandeja de leads** — lista con filtros, detalle, cambio de estado, notas, reproducir/descargar maqueta, CSV, borrado ARCO. *RF-24.*
+- [x] **T-22 · Dashboard** — tarjetas y gráficas simples (leads por estado/fuente, clics links, reproducciones). *RF-21.*
+- [x] **T-23 · Usuarios (superadmin)** — *RF-25.*
+- [x] **T-24 · Vista previa de borradores** — token de preview que permite ver contenido no publicado en el sitio público.
 
 ## Hito 4 · Producción
 

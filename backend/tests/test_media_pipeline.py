@@ -42,7 +42,7 @@ async def test_wav_upload_is_ready_with_lufs_and_peaks(tmp_path: Path) -> None:
         )
         asset_id = asset.id
 
-    for _ in range(8):
+    for _ in range(40):
         await run_once(storage)
         async with SessionMaker() as session:
             current = await session.get(MediaAsset, asset_id)

@@ -12,6 +12,9 @@ _CACHE = "public, max-age=60, stale-while-revalidate=300"
 class PublicCacheMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         response = await call_next(request)
+        if request.query_params.get("preview"):
+            response.headers["Cache-Control"] = "private, no-store"
+            return response
         if not _cacheable(request, response):
             return response
         iterator = cast(AsyncIterator[bytes], response.body_iterator)  # type: ignore[attr-defined]

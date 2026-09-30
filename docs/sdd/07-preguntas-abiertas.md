@@ -37,6 +37,7 @@
 | Q19 | El seed de `/links` pide WhatsApp y Spotify, pero no hay número (Q2) ni perfil de Spotify (Q10). | Esos dos enlaces se crean sin publicar. Contacto, Instagram y Portafolio sí. | Publicarlos cuando existan URL reales. |
 | Q20 | ¿Cuál es el límite de `POST /portfolio/{slug}/events`? | 60 por minuto por `ip_hash` (IP + `IP_HASH_SALT`, confiando en `X-Forwarded-For`). | Ajustar el número si se quiere otro tope. |
 | Q21 | ¿Nuxt Image optimiza los archivos de `/media`? | No. Caddy ya sirve WebP/AVIF con hash. El sitio usa `<picture>` con esas URLs. IPX dentro del contenedor `web` no alcanza el volumen de medios. | Cambiar a `@nuxt/image` si los medios se publican en un origen que el contenedor pueda leer. |
+| Q22 | ¿Cuánto dura el bloqueo tras 5 intentos fallidos? | 15 minutos. El acceso dura 15 minutos y el refresh 7 días. El enlace de contraseña vence en 1 hora. La vista previa de borradores dura 2 horas. | Ajustar los tiempos en `app/core/security.py`. |
 
 ## Datos para el correo en Google Workspace
 

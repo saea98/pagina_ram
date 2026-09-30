@@ -1,5 +1,6 @@
 """ORM models for the Phase 1 schema."""
 
+from app.models.auth import PasswordResetToken, PreviewToken, RefreshToken
 from app.models.base import Base
 from app.models.content import (
     BioLink,
@@ -27,10 +28,13 @@ __all__ = [
     "Lead",
     "LeadEvent",
     "MediaAsset",
+    "PasswordResetToken",
     "PlayEvent",
     "PortfolioItem",
     "PortfolioItemCredit",
     "PortfolioItemService",
+    "PreviewToken",
+    "RefreshToken",
     "Service",
     "SiteSettings",
     "TeamMember",

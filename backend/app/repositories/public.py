@@ -1,10 +1,11 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import ColumnElement, select
+from sqlalchemy import ColumnElement, select, true
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import InstrumentedAttribute, aliased
 
+from app.core.preview import preview_active
 from app.models.content import (
     BioLink,
     Faq,
@@ -23,7 +24,8 @@ def _live(
     published: InstrumentedAttribute[bool],
     deleted: InstrumentedAttribute[datetime | None],
 ) -> tuple[ColumnElement[bool], ColumnElement[bool]]:
-    return published.is_(True), deleted.is_(None)
+    visible = true() if preview_active.get() else published.is_(True)
+    return visible, deleted.is_(None)
 
 
 async def get_settings(session: AsyncSession) -> SiteSettings | None:

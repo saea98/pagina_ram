@@ -54,6 +54,11 @@ class AppError(Exception):
         super().__init__(message)
 
 
+class Unauthorized(AppError):
+    code = "unauthorized"
+    status_code = 401
+
+
 class NotFound(AppError):
     code = "not_found"
     status_code = 404

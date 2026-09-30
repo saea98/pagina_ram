@@ -5,5 +5,11 @@ export function apiBase(): string {
 }
 
 export function usePublic<T>(path: string, key: string) {
-  return useFetch<T>(path, { baseURL: apiBase(), key })
+  const route = useRoute()
+  const preview = route.query.preview
+  const token = typeof preview === 'string' ? preview : ''
+  const full = token
+    ? `${path}${path.includes('?') ? '&' : '?'}preview=${encodeURIComponent(token)}`
+    : path
+  return useFetch<T>(full, { baseURL: apiBase(), key: token ? `${key}:${token}` : key })
 }

@@ -20,7 +20,7 @@
 	}
 
 	handle {
-		reverse_proxy web:3000
+		reverse_proxy web:3010
 	}
 
 	header {
