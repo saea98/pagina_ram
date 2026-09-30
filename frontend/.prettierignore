@@ -4,3 +4,4 @@ app/types/api.ts
 .output
 node_modules
 pnpm-lock.yaml
+.lighthouseci

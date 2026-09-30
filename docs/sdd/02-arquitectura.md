@@ -104,7 +104,8 @@ pagina_ram/
     ├── docker-compose.server.yml # este servidor: Caddy HTTP en 8090
     ├── docker-compose.prod.yml  # overrides prod (imágenes GHCR, límites)
     ├── Caddyfile                # localhost + tls internal
-    ├── Caddyfile.server         # HTTP :80, sin certificado propio
+    ├── Caddyfile.prod           # dominio, HSTS y CSP (máquina dedicada)
+    ├── Caddyfile.server         # HTTP :80, HSTS y CSP, sin certificado propio
     ├── .env.example
     └── scripts/                 # backup.sh, restore.sh, deploy.sh
 ```

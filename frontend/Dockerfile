@@ -29,6 +29,6 @@ ENV NODE_ENV=production \
 COPY --from=build /app/.output ./.output
 USER node
 EXPOSE 3010
-HEALTHCHECK --interval=30s --timeout=5s --start-period=20s \
-    CMD wget -qO- http://127.0.0.1:3010/ >/dev/null || exit 1
+HEALTHCHECK --interval=30s --timeout=10s --start-period=20s \
+    CMD wget -qO- http://127.0.0.1:3010/healthz >/dev/null || exit 1
 CMD ["node", ".output/server/index.mjs"]

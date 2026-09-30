@@ -39,9 +39,9 @@ services:
     networks: [internal]
     logging: *default-logging
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3010/"]
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3010/healthz"]
       interval: 10s
-      timeout: 5s
+      timeout: 10s
       retries: 12
       start_period: 40s
     depends_on:

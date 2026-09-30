@@ -1,0 +1,41 @@
+name: lighthouse
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: URL base, con esquema y sin barra final
+        required: true
+        default: https://localhost
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.18.2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+      - uses: browser-actions/setup-chrome@v1
+        id: chrome
+      - name: Lighthouse CI
+        working-directory: frontend
+        env:
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
+          BASE_URL: ${{ inputs.base_url }}
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm exec lhci autorun \
+            --collect.url="${BASE_URL}/" \
+            --collect.url="${BASE_URL}/servicios/mezcla" \
+            --collect.url="${BASE_URL}/portafolio" \
+            --collect.url="${BASE_URL}/links"

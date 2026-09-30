@@ -1,12 +1,9 @@
-# Servidor compartido. Nginx Proxy Manager termina TLS en 80/443.
-# Este Caddy solo escucha HTTP dentro de la red; el host publica el 8090.
-{
-	servers {
-		trusted_proxies static private_ranges
-	}
-}
+# Máquina dedicada: Caddy publica 80/443 y pide el certificado.
+# En el servidor compartido no uses este archivo; ahí manda Caddyfile.server (HTTP 8090).
+{$DOMAIN}, www.{$DOMAIN} {
+	@www host www.{$DOMAIN}
+	redir @www https://{$DOMAIN}{uri} permanent
 
-:80 {
 	encode zstd gzip
 
 	handle_path /media/* {
@@ -22,6 +19,8 @@
 	handle {
 		reverse_proxy web:3010
 	}
+
+	redir /aviso-de-privacidad.html /aviso-de-privacidad permanent
 
 	header {
 		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"

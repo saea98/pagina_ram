@@ -39,4 +39,6 @@ test-results/
 # Medios y respaldos locales
 infra/media/
 infra/backups/
+infra/.current_tag
+infra/.last_tag
 *.log

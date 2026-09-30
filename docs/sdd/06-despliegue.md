@@ -15,7 +15,7 @@
 | Servicio | Imagen | Puerto interno | Volúmenes | Healthcheck |
 |----------|--------|----------------|-----------|-------------|
 | `caddy` | `caddy:2.11.4-alpine` | 80 interno; en este servidor el host expone **8090**. En local, 80/443 | `caddy_data`, `caddy_config`, `media:ro` | — |
-| `web` | `ghcr.io/saea98/pagina_ram-web` | 3010 | — | `GET /` |
+| `web` | `ghcr.io/saea98/pagina_ram-web` | 3010 | — | `GET /healthz` |
 | `api` | `ghcr.io/saea98/pagina_ram-api` | 8000 | `media` | `GET /api/ready` |
 | `worker` | misma que `api` (`command: python -m app.workers`) | — | `media` | proceso vivo |
 | `db` | `postgres:17.11-alpine` | 5432 (solo red interna) | `pg_data` | `pg_isready` |
@@ -68,9 +68,16 @@ MAX_UPLOAD_MB_LEAD=30
 
 # Observabilidad (opcional)
 SENTRY_DSN=
+
+# Imagen (deploy.sh) y copia offsite del respaldo. Ver infra/.env.example.
+IMAGE_TAG=latest
+GHCR_USER=
+GHCR_TOKEN=
+# OFFSITE_RESTIC_REPOSITORY=
+# OFFSITE_RESTIC_PASSWORD=
 ```
 
-En este servidor el archivo activo es `infra/Caddyfile.server` (solo `:80`, sin TLS). El bloque de abajo queda para una máquina donde Caddy pueda usar 80/443 (T-25).
+En este servidor el archivo activo es `infra/Caddyfile.server` (`:80`, sin TLS propio, con HSTS y CSP). `infra/Caddyfile.prod` es el mismo sitio para una máquina donde Caddy pueda usar 80/443. El de desarrollo (`infra/Caddyfile`) no lleva HSTS ni CSP.
 
 ## Caddyfile (referencia, máquina dedicada)
 
@@ -100,6 +107,7 @@ En este servidor el archivo activo es `infra/Caddyfile.server` (solo `:80`, sin 
     X-Content-Type-Options "nosniff"
     Referrer-Policy "strict-origin-when-cross-origin"
     Permissions-Policy "camera=(), microphone=(), geolocation=()"
+    Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' blob:; connect-src 'self' https://challenges.cloudflare.com; frame-src 'self' https://open.spotify.com https://www.youtube-nocookie.com https://w.soundcloud.com https://challenges.cloudflare.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
     -Server
   }
   request_body {
@@ -107,7 +115,7 @@ En este servidor el archivo activo es `infra/Caddyfile.server` (solo `:80`, sin 
   }
 }
 ```
-(La CSP la define Nuxt vía `nuxt-security` para poder usar nonces.)
+La CSP la envía Caddy. `script-src` incluye `'unsafe-inline'` por el bootstrap de Nuxt (Q23).
 
 ## Primer despliegue (servidor compartido)
 
@@ -129,11 +137,15 @@ El `docker compose` de desarrollo sigue siendo el de local: `docker-compose.yml`
 
 ## Despliegues siguientes (CI)
 
-1. Push a `main` → Actions corre tests → construye `web` y `api` → publica en GHCR con tags `sha-<commit>` y `latest`.
-2. Job `deploy` (con aprobación manual del environment `production`) hace SSH y ejecuta `infra/scripts/deploy.sh <sha>`:
-   - `docker compose pull`, `alembic upgrade head`, `up -d`, espera healthchecks.
-   - Si falla, vuelve a la imagen previa (`deploy.sh rollback`).
-3. Secrets de GitHub requeridos: `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY`.
+1. Push a `main` → `.github/workflows/ci.yml` corre tests, lint y `docker compose config` de producción. En `main` también levanta el stack y corre Playwright + axe.
+2. `.github/workflows/release.yml` construye `web` y `api` (target `runtime`, `linux/amd64`) y publica `ghcr.io/saea98/pagina_ram-web` y `pagina_ram-api` con tags `sha-<7>` y `latest`.
+3. `.github/workflows/deploy.yml` espera el environment `production` (aprobación manual en GitHub) y por SSH ejecuta `infra/scripts/deploy.sh sha-<7>`:
+   - compose: `docker-compose.yml` + `docker-compose.prod.yml` + `docker-compose.server.yml` (puerto **8090**).
+   - `docker compose pull`, `alembic upgrade head`, `up -d`, healthchecks 120 s.
+   - Si falla, `deploy.sh rollback` vuelve al tag de `infra/.last_tag`.
+   - Máquina dedicada (80/443 y `Caddyfile.prod`): `CHERRY_DEDICATED=1`.
+4. Secrets: `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY`. En el servidor, si el paquete GHCR es privado, `GHCR_USER` y `GHCR_TOKEN` en `infra/.env`.
+5. Lighthouse (manual): `.github/workflows/lighthouse.yml`. No cambia DNS; eso es T-29.
 
 ## Respaldos
 
@@ -148,7 +160,7 @@ El `docker compose` de desarrollo sigue siendo el de local: `docker-compose.yml`
 - [ ] Correos de notificación llegan (probar Gmail y Outlook) y no caen en spam (SPF/DKIM/DMARC).
 - [ ] WhatsApp abre con mensaje correcto en iOS y Android.
 - [ ] Vistas previas OG correctas en WhatsApp, Instagram DM, X, Facebook.
-- [ ] Lighthouse móvil cumple presupuestos.
+- [ ] Lighthouse móvil cumple presupuestos. Corrida local del 2026-09-30 (imagen `runtime`, gzip, móvil simulado, 1 pasada): accesibilidad 100, SEO 100, buenas prácticas 96–100, JS 101–122 KB. Performance 90 / 94 / 80 / 95 en `/`, `/servicios/mezcla`, `/portafolio`, `/links`. LCP 3.1 / 2.6 / 2.6 / 2.4 s. CLS de `/portafolio` 0.27. Aún no cumple RNF-01 y RNF-02 en todas las páginas.
 - [ ] Respaldo y restauración probados.
 - [ ] Google Search Console y Bing Webmaster verificados, sitemap enviado.
 - [ ] Perfil de Google Business actualizado con el nuevo sitio.

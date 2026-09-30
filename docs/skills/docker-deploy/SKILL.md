@@ -65,7 +65,7 @@ ENV NODE_ENV=production PORT=3010 HOST=0.0.0.0
 COPY --from=build /app/.output ./.output
 USER node
 EXPOSE 3010
-HEALTHCHECK --interval=30s --timeout=5s CMD wget -qO- http://localhost:3010/ >/dev/null || exit 1
+HEALTHCHECK --interval=30s --timeout=10s CMD wget -qO- http://localhost:3010/healthz >/dev/null || exit 1
 CMD ["node",".output/server/index.mjs"]
 ```
 
@@ -83,7 +83,7 @@ CMD ["node",".output/server/index.mjs"]
 - `deploy.yml` (manual o tras release, environment `production` con aprobación): SSH con `appleboy/ssh-action` → `infra/scripts/deploy.sh sha-<short>`.
 
 ## Scripts (`infra/scripts/`)
-- `deploy.sh <tag>`: guarda tag actual en `.last_tag`, exporta `IMAGE_TAG`, `docker compose pull`, `run --rm api alembic upgrade head`, `up -d`, espera healthchecks (timeout 120 s); si falla → `deploy.sh rollback`.
+- `deploy.sh <tag>`: guarda tag actual en `.last_tag`, exporta `IMAGE_TAG`, `docker compose pull`, `run --rm api alembic upgrade head`, `up -d`, espera healthchecks (timeout 120 s); si falla → `deploy.sh rollback`. Usa `docker-compose.prod.yml` y, salvo `CHERRY_DEDICATED=1`, también `docker-compose.server.yml` (puerto 8090).
 - `backup.sh`: `pg_dump -Fc` + `tar -czf media-<fecha>.tgz`, borra > 14 días; opcional `restic backup` si hay variables `OFFSITE_*`.
 - `restore.sh <fecha>`: detiene web/api, `pg_restore --clean`, restaura media, levanta.
 - Todos con `set -euo pipefail` y mensajes claros en español.

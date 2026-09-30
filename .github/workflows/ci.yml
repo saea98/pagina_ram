@@ -1,0 +1,134 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17.11-alpine
+        env:
+          POSTGRES_DB: cherry
+          POSTGRES_USER: cherry
+          POSTGRES_PASSWORD: cherry
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U cherry -d cherry"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      DATABASE_URL: postgresql+asyncpg://cherry:cherry@localhost:5432/cherry
+      SECRET_KEY: ci-secret-key
+      IP_HASH_SALT: ci-salt
+      ENVIRONMENT: development
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.12.19"
+      - name: Dependencias del sistema
+        run: sudo apt-get update && sudo apt-get install -y libmagic1 ffmpeg
+      - name: Instalar, migrar y probar
+        working-directory: backend
+        run: |
+          uv sync --frozen
+          uv run alembic upgrade head
+          uv run ruff check .
+          uv run mypy app
+          uv run pytest -q
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.18.2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+      - name: Lint, tipos, tests y build
+        working-directory: frontend
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm lint
+          pnpm typecheck
+          pnpm test
+          pnpm build
+
+  compose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validar compose de producción
+        working-directory: infra
+        env:
+          POSTGRES_DB: cherry
+          POSTGRES_USER: cherry
+          POSTGRES_PASSWORD: cherry
+          DOMAIN: cherrystudios.com.mx
+          IMAGE_TAG: latest
+        run: |
+          docker compose -f docker-compose.yml -f docker-compose.prod.yml config --services
+          docker compose -f docker-compose.yml -f docker-compose.prod.yml -f docker-compose.server.yml config --services
+
+  e2e:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [backend, frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.18.2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+      - name: Entorno de prueba
+        working-directory: infra
+        run: |
+          cat > .env <<'EOF'
+          DOMAIN=localhost
+          ENVIRONMENT=development
+          POSTGRES_DB=cherry
+          POSTGRES_USER=cherry
+          POSTGRES_PASSWORD=ci-cherry-db
+          DATABASE_URL=postgresql+asyncpg://cherry:ci-cherry-db@db:5432/cherry
+          SECRET_KEY=ci-secret-key-not-for-production
+          IP_HASH_SALT=ci-salt
+          SEED_ADMIN_EMAIL=seed@cherrystudios.test
+          SEED_ADMIN_PASSWORD=seed-ci-password
+          PUBLIC_SITE_URL=https://localhost
+          NUXT_PUBLIC_SITE_URL=https://localhost
+          EOF
+      - name: Levantar el stack
+        working-directory: infra
+        run: |
+          docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
+          for _ in $(seq 1 60); do
+            if docker compose -f docker-compose.yml -f docker-compose.dev.yml ps --format '{{.Service}} {{.Health}}' | awk '$1=="api" && $2=="healthy" { found=1 } END { exit !found }'; then
+              break
+            fi
+            sleep 5
+          done
+          docker compose -f docker-compose.yml -f docker-compose.dev.yml exec -T api alembic upgrade head
+          docker compose -f docker-compose.yml -f docker-compose.dev.yml exec -T api python -m app.seed
+      - name: Playwright y axe
+        working-directory: frontend
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm exec playwright install --with-deps chromium
+          pnpm test:e2e

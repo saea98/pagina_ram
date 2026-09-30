@@ -1,0 +1,49 @@
+name: deploy
+
+on:
+  workflow_run:
+    workflows: [release]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag de imagen (sha-xxxxxxx o latest)
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  ssh:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - id: tag
+        env:
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            tag="$INPUT_TAG"
+          else
+            tag="sha-${HEAD_SHA:0:7}"
+          fi
+          if ! [[ "$tag" =~ ^(sha-[0-9a-f]{7,40}|latest)$ ]]; then
+            echo "Tag inválido." >&2
+            exit 1
+          fi
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+      - uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+            cd /home/saes98/cherry/cherry
+            git pull --ff-only
+            cd infra
+            ./scripts/deploy.sh "${{ steps.tag.outputs.tag }}"

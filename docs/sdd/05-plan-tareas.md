@@ -41,9 +41,9 @@
 
 ## Hito 4 · Producción
 
-- [ ] **T-25 · Imágenes de producción** — Dockerfiles multi‑stage (usuario no root, healthchecks), `docker-compose.prod.yml`, Caddyfile con dominio, cabeceras de seguridad y CSP. Ver skill `docker-deploy`.
-- [ ] **T-26 · Respaldos** — contenedor `backup` con `pg_dump` diario + tar de media, retención 14 días, `restore.sh` probado. *RNF-06.*
-- [ ] **T-27 · Pipeline de despliegue** — Actions: build → GHCR con tag `sha` y `latest` → deploy por SSH (`deploy.sh`) con rollback a tag anterior. Documentar en `06-despliegue.md`.
+- [x] **T-25 · Imágenes de producción** — Dockerfiles multi‑stage (usuario no root, healthchecks), `docker-compose.prod.yml`, Caddyfile con dominio, cabeceras de seguridad y CSP. Ver skill `docker-deploy`.
+- [x] **T-26 · Respaldos** — contenedor `backup` con `pg_dump` diario + tar de media, retención 14 días, `restore.sh` probado. *RNF-06.*
+- [x] **T-27 · Pipeline de despliegue** — Actions: build → GHCR con tag `sha` y `latest` → deploy por SSH (`deploy.sh`) con rollback a tag anterior. Documentar en `06-despliegue.md`.
 - [ ] **T-28 · Auditoría final** — Lighthouse CI con presupuestos (RNF-01..03), axe en e2e, pruebas en iPhone/Android reales, checklist de lanzamiento de `06-despliegue.md`.
 - [ ] **T-29 · Migración de dominio** — bajar Netlify, apuntar DNS al servidor, redirecciones 301 (`/aviso-de-privacidad.html` → `/aviso-de-privacidad`), verificar correo del dominio (SPF/DKIM/DMARC del proveedor SMTP).
 

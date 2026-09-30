@@ -1,0 +1,83 @@
+# Imágenes de GHCR, límites y respaldo.
+# Servidor compartido: docker-compose.yml + este archivo + docker-compose.server.yml
+# (deploy.sh lo hace así). Máquina dedicada, con 80/443: CHERRY_DEDICATED=1.
+services:
+  caddy:
+    ports: !override
+      - "80:80"
+      - "443:443"
+    volumes: !override
+      - ./Caddyfile.prod:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+      - media:/srv/media:ro
+    environment:
+      DOMAIN: ${DOMAIN:?set DOMAIN}
+
+  web:
+    image: ghcr.io/saea98/pagina_ram-web:${IMAGE_TAG:-latest}
+    pull_policy: always
+    build: !reset null
+    environment:
+      NUXT_PUBLIC_SITE_URL: https://${DOMAIN:?set DOMAIN}
+      NUXT_PUBLIC_ENVIRONMENT: production
+      ENVIRONMENT: production
+    mem_limit: 512m
+
+  api:
+    image: ghcr.io/saea98/pagina_ram-api:${IMAGE_TAG:-latest}
+    pull_policy: always
+    build: !reset null
+    environment:
+      ENVIRONMENT: production
+    mem_limit: 1g
+
+  worker:
+    image: ghcr.io/saea98/pagina_ram-api:${IMAGE_TAG:-latest}
+    pull_policy: always
+    build: !reset null
+    environment:
+      ENVIRONMENT: production
+    mem_limit: 1536m
+
+  db:
+    mem_limit: 1g
+
+  backup:
+    image: postgres:17.11-alpine
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      TZ: America/Mexico_City
+      PGPASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        set -eu
+        apk add --no-cache tzdata restic
+        while true; do
+          now=$$(date +%s)
+          target=$$(date -d "$$(date +%Y-%m-%d) 03:30:00" +%s)
+          if [ "$$target" -le "$$now" ]; then
+            target=$$((target + 86400))
+          fi
+          sleep $$((target - now))
+          /usr/local/bin/backup.sh || echo "El respaldo falló."
+          sleep 90
+        done
+    volumes:
+      - backups:/backups
+      - media:/srv/media:ro
+      - ./scripts/backup.sh:/usr/local/bin/backup.sh:ro
+    networks: [internal]
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  backups:

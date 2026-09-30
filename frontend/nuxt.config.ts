@@ -4,7 +4,7 @@ const hmrClientPort = process.env.NUXT_VITE_HMR_CLIENT_PORT
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
-  devtools: { enabled: true },
+  devtools: { enabled: process.env.NODE_ENV !== 'production' },
   css: ['~/assets/css/main.css', '~/assets/css/admin.css'],
   modules: [
     '@nuxt/eslint',

@@ -29,7 +29,7 @@
 | # | Pregunta | Supuesto actual | Impacto si cambia |
 |---|----------|-----------------|-------------------|
 | Q13 | ¿Qué tags exactos de imágenes base usamos? | Parches fijados: Caddy `2.11.4`, Postgres `17.11`, Node `22.23.3`, Python `3.12.14`, uv `0.12.19`, Mailpit `v1.31.3`. | Cambiar el tag en Dockerfiles y compose. |
-| Q14 | ¿El Caddyfile de desarrollo incluye HSTS? | No. `infra/Caddyfile` sirve `localhost` con `tls internal`, sin HSTS. El bloque de producción de `06-despliegue.md` se aplica en T-25. | Añadir cabeceras al pasar a producción. |
+| Q14 | ¿El Caddyfile de desarrollo incluye HSTS? | No. `infra/Caddyfile` sirve `localhost` con `tls internal`, sin HSTS. HSTS y CSP están en `Caddyfile.prod` y `Caddyfile.server`. | Quitar HSTS del servidor compartido si NPM ya lo envía y se duplica. |
 | Q15 | ¿Las imágenes de desarrollo corren sin root? | El target `runtime` sí (usuario `app` / `node`). El target `dev` corre como root para que el hot reload escriba en el bind mount. | Endurecer el target `dev` si el equipo lo pide. |
 | Q16 | ¿Qué código de error usa `/api/ready` si la base no responde? | HTTP 503, `{"error":{"code":"unavailable","message":"La base de datos no está disponible."}}`. | Ajustar el código si se acuerda otro. |
 | Q17 | ¿Qué texto largo usan servicios y bios si el template solo trae el corto? | `long_description` y `bio_long` copian el texto corto. El admin puede ampliarlos después. | Reemplazar el seed si llega copy largo. |
@@ -38,6 +38,7 @@
 | Q20 | ¿Cuál es el límite de `POST /portfolio/{slug}/events`? | 60 por minuto por `ip_hash` (IP + `IP_HASH_SALT`, confiando en `X-Forwarded-For`). | Ajustar el número si se quiere otro tope. |
 | Q21 | ¿Nuxt Image optimiza los archivos de `/media`? | No. Caddy ya sirve WebP/AVIF con hash. El sitio usa `<picture>` con esas URLs. IPX dentro del contenedor `web` no alcanza el volumen de medios. | Cambiar a `@nuxt/image` si los medios se publican en un origen que el contenedor pueda leer. |
 | Q22 | ¿Cuánto dura el bloqueo tras 5 intentos fallidos? | 15 minutos. El acceso dura 15 minutos y el refresh 7 días. El enlace de contraseña vence en 1 hora. La vista previa de borradores dura 2 horas. | Ajustar los tiempos en `app/core/security.py`. |
+| Q23 | ¿La CSP sale de `nuxt-security` (nonces) o de Caddy? | De Caddy (`Caddyfile.prod` y `Caddyfile.server`). `script-src` permite `'unsafe-inline'` porque el bootstrap de Nuxt es inline. No se instala `nuxt-security`: una segunda CSP anularía la de Caddy. | Pasar a nonces si se quiere quitar `unsafe-inline`. |
 
 ## Datos para el correo en Google Workspace
 
