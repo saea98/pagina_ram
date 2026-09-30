@@ -21,11 +21,18 @@ async def _serve(storage: LocalStorage) -> None:
         loop.add_signal_handler(signum, stop.set)
     log.info("worker_started")
     while not stop.is_set():
-        worked = await run_once(storage)
+        try:
+            worked = await run_once(storage)
+        except Exception:
+            log.exception("worker_poll_failed")
+            worked = False
+            pause = 5.0
+        else:
+            pause = 1.0
         if worked:
             continue
         try:
-            await asyncio.wait_for(stop.wait(), timeout=1)
+            await asyncio.wait_for(stop.wait(), timeout=pause)
         except TimeoutError:
             continue
     log.info("worker_stopping")

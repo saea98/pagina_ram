@@ -128,7 +128,11 @@ git pull
 cd infra
 docker compose -f docker-compose.yml -f docker-compose.server.yml up -d --build
 docker compose -f docker-compose.yml -f docker-compose.server.yml exec api alembic upgrade head
+docker compose -f docker-compose.yml -f docker-compose.server.yml run --rm --no-deps --user root api \
+  sh -c 'mkdir -p /srv/media/public /srv/media/private && chown -R app:app /srv/media'
 docker compose -f docker-compose.yml -f docker-compose.server.yml exec api python -m app.seed
+# El override de servidor monta cherry-studios-site en /seed-source (TEMPLATE_ROOT).
+# No hace falta meter esa carpeta en la imagen.
 ```
 
 En NPM, proxy host `cherrystudios.com.mx` (y `www` → el dominio sin www) hacia `http://127.0.0.1:8090`. Scheme HTTP, websockets on. El certificado lo emite NPM.

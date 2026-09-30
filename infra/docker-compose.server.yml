@@ -10,6 +10,12 @@ services:
       - caddy_config:/config
       - media:/srv/media:ro
 
+  api:
+    environment:
+      TEMPLATE_ROOT: /seed-source
+    volumes:
+      - ../cherry-studios-site:/seed-source:ro
+
   web:
     environment:
       NUXT_PUBLIC_SITE_URL: https://cherrystudios.com.mx

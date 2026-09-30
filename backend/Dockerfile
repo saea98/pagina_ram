@@ -31,7 +31,9 @@ CMD ["uvicorn", "app.main:app", "--reload", "--reload-dir", "app", "--host", "0.
 
 FROM base AS runtime
 
-RUN useradd -u 10001 -m app
+RUN useradd -u 10001 -m app \
+    && mkdir -p /srv/media/public /srv/media/private \
+    && chown -R app:app /srv/media
 COPY --from=deps /opt/venv /opt/venv
 COPY . .
 RUN chown -R app:app /app

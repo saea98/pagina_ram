@@ -11,11 +11,21 @@ localhost {
 	}
 
 	handle /api/* {
-		reverse_proxy api:8000
+		reverse_proxy {
+			dynamic a api 8000 {
+				refresh 10s
+				resolvers 127.0.0.11
+			}
+		}
 	}
 
 	handle {
-		reverse_proxy web:3010
+		reverse_proxy {
+			dynamic a web 3010 {
+				refresh 10s
+				resolvers 127.0.0.11
+			}
+		}
 	}
 
 	header {
