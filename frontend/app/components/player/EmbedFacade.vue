@@ -13,10 +13,16 @@ let wasPlaying = false
 let ignoreUntil = 0
 
 const isSpotify = computed(() => props.piece.kind === 'spotify' && Boolean(props.piece.external_id))
+const spotifyKind = computed(() =>
+  props.piece.external_url?.includes('/album/') ? 'album' : 'track',
+)
 const spotifyUri = computed(() => {
   if (!isSpotify.value || !props.piece.external_id) return ''
-  const type = props.piece.external_url?.includes('/album/') ? 'album' : 'track'
-  return `spotify:${type}:${props.piece.external_id}`
+  return `spotify:${spotifyKind.value}:${props.piece.external_id}`
+})
+const spotifySrc = computed(() => {
+  if (!isSpotify.value || !props.piece.external_id) return ''
+  return `https://open.spotify.com/embed/${spotifyKind.value}/${props.piece.external_id}?utm_source=generator&theme=0`
 })
 
 const embedSrc = computed(() => {
@@ -96,7 +102,16 @@ bus.on((id) => {
       <span class="embed-artist">{{ piece.artist_name }}</span>
     </div>
     <template v-if="isSpotify">
-      <div ref="host" class="embed-player" />
+      <div class="embed-slot">
+        <iframe
+          v-show="!ready"
+          class="embed-frame"
+          :src="spotifySrc"
+          :title="piece.title"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        />
+        <div ref="host" class="embed-player" :class="{ 'is-booting': !ready }" />
+      </div>
       <div class="listen-row embed-actions">
         <button class="btn btn-solid" type="button" :disabled="!ready" @click="toggleSpotify">
           {{ playing ? 'Pausar' : 'Escuchar' }}
