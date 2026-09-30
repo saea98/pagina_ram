@@ -749,6 +749,9 @@ p.lede {
   font-size: 0.9rem;
   padding: 13px 24px;
 }
+.embed-actions {
+  margin-top: 14px;
+}
 .facade {
   position: relative;
   min-height: 152px;
@@ -766,6 +769,7 @@ p.lede {
 }
 .embed-player {
   width: 100%;
+  min-height: 152px;
   border-radius: 12px;
   overflow: hidden;
   background: #0e0405;
@@ -781,6 +785,7 @@ p.lede {
 }
 .embed-player.is-video {
   position: relative;
+  min-height: 0;
   padding-top: 56.25%;
 }
 .embed-player.is-video iframe {
