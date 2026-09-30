@@ -1028,51 +1028,6 @@ footer.site-foot a:hover {
   justify-content: center;
   box-shadow: var(--shadow);
 }
-.player-space {
-  height: 0;
-}
-body.has-player {
-  padding-bottom: 88px;
-}
-.global-player {
-  position: fixed;
-  left: 12px;
-  right: 12px;
-  bottom: 12px;
-  z-index: 70;
-  height: 72px;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 14px;
-  align-items: center;
-  padding: 8px 14px;
-  border-radius: 18px;
-  background: rgba(61, 13, 17, 0.96);
-  color: var(--cream);
-  backdrop-filter: blur(10px);
-  box-shadow: var(--shadow);
-}
-.global-player img {
-  width: 52px;
-  height: 52px;
-  border-radius: 10px;
-  object-fit: cover;
-}
-.global-player .meta {
-  min-width: 0;
-}
-.global-player strong {
-  display: block;
-  font-family: 'Fraunces', serif;
-  font-weight: 600;
-}
-.global-player span {
-  color: var(--blush);
-  font-size: 0.82rem;
-}
-.wave {
-  height: 48px;
-}
 .ab-switch {
   display: inline-flex;
   border-radius: 999px;

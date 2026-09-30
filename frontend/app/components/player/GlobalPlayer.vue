@@ -4,8 +4,6 @@ import { apiBase } from '~/composables/useApi'
 
 const store = usePlayerStore()
 const audio = ref<HTMLAudioElement | null>(null)
-const waveHost = ref<HTMLElement | null>(null)
-let wave: { destroy: () => void } | null = null
 
 function start(track: PlayerTrack) {
   const element = audio.value
@@ -13,37 +11,6 @@ function start(track: PlayerTrack) {
   element.src = track.audioUrl
   void element.play().catch(() => {
     store.pause()
-  })
-  void mountWave(track)
-}
-
-async function mountWave(track: PlayerTrack) {
-  await nextTick()
-  const element = audio.value
-  const host = waveHost.value
-  if (!element || !host) return
-  wave?.destroy()
-  const WaveSurfer = (await import('wavesurfer.js')).default
-  let peaks = [Array.from({ length: 800 }, () => 0.15)]
-  if (track.peaksUrl) {
-    try {
-      peaks = [await $fetch<number[]>(track.peaksUrl)]
-    } catch {
-      /* keep a flat waveform; do not decode the file */
-    }
-  }
-  wave = WaveSurfer.create({
-    container: host,
-    media: element,
-    peaks,
-    duration: track.duration ?? 1,
-    height: 48,
-    waveColor: 'rgba(255,244,235,0.28)',
-    progressColor: '#FFBEC5',
-    cursorWidth: 0,
-    barWidth: 2,
-    barGap: 1,
-    interact: true,
   })
   if ('mediaSession' in navigator) {
     navigator.mediaSession.metadata = new MediaMetadata({
@@ -58,7 +25,7 @@ async function mountWave(track: PlayerTrack) {
     })
     navigator.mediaSession.setActionHandler('pause', () => store.pause())
   }
-  await $fetch(`${apiBase()}/public/portfolio/${track.id}/events`, {
+  void $fetch(`${apiBase()}/public/portfolio/${track.id}/events`, {
     method: 'POST',
     body: { event: 'play' },
   }).catch(() => undefined)
@@ -94,8 +61,6 @@ onMounted(() => {
     if (id !== 'own') store.pause()
   })
 })
-
-onUnmounted(() => wave?.destroy())
 </script>
 
 <template>
@@ -107,15 +72,4 @@ onUnmounted(() => wave?.destroy())
     @timeupdate="onTime"
     @ended="store.pause()"
   />
-  <div v-if="store.current" class="global-player">
-    <button type="button" class="btn btn-solid" @click="store.toggle()">
-      {{ store.isPlaying ? 'Pausar' : 'Escuchar' }}
-    </button>
-    <img v-if="store.current.coverUrl" :src="store.current.coverUrl" alt="" />
-    <div class="meta">
-      <strong>{{ store.current.title }}</strong>
-      <span>{{ store.current.artist }}</span>
-    </div>
-    <div ref="waveHost" class="wave" />
-  </div>
 </template>

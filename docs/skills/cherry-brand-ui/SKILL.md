@@ -62,7 +62,7 @@ Secuencia de la portada: hero (foto+velo) → cream → blush → cream → maro
 - **Íconos de servicios**: SVG de trazo 1.6 del template (`viewBox 0 0 40 40`, `stroke=currentColor`). Extráelos a `components/icons/` con nombres `composicion`, `grabacion`, `mezcla`, `master`, `producciones`, `beatmaking`, `podcast`, `post-audiovisual`.
 
 ### Componentes nuevos (mantener el mismo lenguaje)
-- **GlobalPlayer**: barra inferior maroon 96 % con blur, waveform en blush (progreso) sobre `--line-dark`, botones pastilla. Alto 72 px; en móvil deja espacio para el botón de WhatsApp.
+- **GlobalPlayer**: el audio propio sigue sonando al navegar, sin barra inferior. Escuchar y Pausar viven en la tarjeta de la pista.
 - **ABPlayer**: switch grande tipo pastilla con dos estados “Antes” (cream sobre ink) / “Después” (maroon sobre blush), etiqueta del estado activo en Fraunces itálica.
 - **WhatsApp flotante**: círculo blush con ícono maroon, abajo‑derecha, no tapa la pastilla de privacidad.
 - **Admin**: base `paper`, sidebar maroon, acentos cherry; misma tipografía. Denso pero amable.

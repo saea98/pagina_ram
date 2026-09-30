@@ -2,11 +2,10 @@
 import type { Site } from '~/types/public'
 
 const { data: site } = await usePublic<Site>('/public/site', 'site')
-const store = usePlayerStore()
 </script>
 
 <template>
-  <div :class="{ 'has-player': Boolean(store.current) }">
+  <div>
     <SiteSplash />
     <SiteHeader :site="site" />
     <SiteProgressRail />
