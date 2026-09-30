@@ -3,6 +3,8 @@ import type { PortfolioCard, Site } from '~/types/public'
 
 defineProps<{ site: Site; portfolio: PortfolioCard[] }>()
 const store = usePlayerStore()
+/** The /portafolio index stays in the app; this home link is off until we use it again. */
+const showPortfolioIndex = false
 
 function listen(piece: PortfolioCard) {
   const audioUrl = piece.audio?.m4a_url || piece.audio?.mp3_url || ''
@@ -57,7 +59,13 @@ function listen(piece: PortfolioCard) {
         </template>
       </div>
       <p v-if="site.portfolio.note" class="portfolio-note">{{ site.portfolio.note }}</p>
-      <NuxtLink class="btn btn-ghost" to="/portafolio" style="margin-top: 22px">Ver todo</NuxtLink>
+      <NuxtLink
+        v-if="showPortfolioIndex"
+        class="btn btn-ghost"
+        to="/portafolio"
+        style="margin-top: 22px"
+        >Ver todo</NuxtLink
+      >
     </div>
   </section>
 </template>

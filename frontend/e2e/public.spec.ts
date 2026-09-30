@@ -54,8 +54,8 @@ test('own audio keeps playing after navigation', async ({ page }) => {
   await expect
     .poll(async () => audio.evaluate((element) => (element as HTMLAudioElement).paused))
     .toBe(false)
-  await page.getByRole('link', { name: 'Ver todo' }).click()
-  await expect(page).toHaveURL(/\/portafolio$/)
+  await page.getByRole('link', { name: 'Aviso de privacidad' }).first().click()
+  await expect(page).toHaveURL(/\/aviso-de-privacidad$/)
   await expect
     .poll(async () => audio.evaluate((element) => (element as HTMLAudioElement).paused))
     .toBe(false)
