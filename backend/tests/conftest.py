@@ -38,7 +38,7 @@ _mount_probes(app)
 
 @pytest.fixture
 async def client() -> AsyncClient:
-    transport = ASGITransport(app=app)
+    transport = ASGITransport(app=app, raise_app_exceptions=False)
     async with AsyncClient(transport=transport, base_url="http://test") as http:
         yield http
 

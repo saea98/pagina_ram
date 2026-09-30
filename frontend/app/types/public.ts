@@ -1,0 +1,18 @@
+import type { components } from './api'
+
+export type Schemas = components['schemas']
+export type Home = Schemas['HomeOut']
+export type Site = Schemas['SitePublic']
+export type ServiceCard = Schemas['ServiceCardOut']
+export type ServiceDetail = Schemas['ServiceDetailOut']
+export type TeamCard = Schemas['TeamCardOut']
+export type TeamDetail = Schemas['TeamDetailOut']
+export type PortfolioCard = Schemas['PortfolioCardOut']
+export type PortfolioDetail = Schemas['PortfolioDetailOut']
+export type Testimonial = Schemas['TestimonialOut']
+export type Faq = Schemas['FaqOut']
+export type BioLink = Schemas['BioLinkOut']
+export type Privacy = Schemas['PrivacyOut']
+export type ImageAsset = Schemas['ImageOut']
+export type AudioAsset = Schemas['AudioOut']
+export type LeadPayload = Schemas['LeadIn']

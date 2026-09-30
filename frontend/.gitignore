@@ -1,5 +1,8 @@
 # Nuxt dev/build outputs
 .output
+test-results
+playwright-report
+blob-report
 .data
 .nuxt
 .nitro

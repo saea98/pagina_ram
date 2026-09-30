@@ -16,6 +16,18 @@ class Settings(BaseSettings):
     secret_key: str
     ip_hash_salt: str = ""
     tz: str = "America/Mexico_City"
+    media_root: str = "/srv/media"
+    max_upload_mb_admin: int = 200
+    max_upload_mb_lead: int = 30
+    template_root: str = ""
+    seed_admin_email: str = ""
+    seed_admin_password: str = ""
+    smtp_host: str = "localhost"
+    smtp_port: int = 1025
+    smtp_user: str = ""
+    smtp_password: str = ""
+    smtp_from: str = "Cherry Studios <no-reply@cherrystudios.com.mx>"
+    turnstile_secret_key: str = ""
 
 
 @lru_cache

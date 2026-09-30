@@ -1,29 +1,40 @@
-"""Keep the worker process alive until the job loop lands in T-06."""
+"""Job worker. Processes one queued job at a time."""
 
+import asyncio
 import signal
-import time
+from pathlib import Path
 
 import structlog
 
+from app.core.config import get_settings
 from app.core.logging import configure_logging
+from app.core.storage import LocalStorage
+from app.workers.loop import run_once
 
 log = structlog.get_logger()
 
 
+async def _serve(storage: LocalStorage) -> None:
+    stop = asyncio.Event()
+    loop = asyncio.get_running_loop()
+    for signum in (signal.SIGTERM, signal.SIGINT):
+        loop.add_signal_handler(signum, stop.set)
+    log.info("worker_started")
+    while not stop.is_set():
+        worked = await run_once(storage)
+        if worked:
+            continue
+        try:
+            await asyncio.wait_for(stop.wait(), timeout=1)
+        except TimeoutError:
+            continue
+    log.info("worker_stopping")
+
+
 def main() -> None:
     configure_logging()
-    stop = False
-
-    def handle(signum: int, _frame: object) -> None:
-        nonlocal stop
-        stop = True
-        log.info("worker_stopping", signal=signum)
-
-    signal.signal(signal.SIGTERM, handle)
-    signal.signal(signal.SIGINT, handle)
-    log.info("worker_waiting")
-    while not stop:
-        time.sleep(1)
+    storage = LocalStorage(Path(get_settings().media_root))
+    asyncio.run(_serve(storage))
 
 
 if __name__ == "__main__":

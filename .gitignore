@@ -21,6 +21,7 @@ htmlcov/
 
 # Node / Nuxt
 node_modules/
+.pnpm-store/
 .nuxt/
 .output/
 .data/

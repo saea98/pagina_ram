@@ -15,7 +15,9 @@
     "lint": "eslint . && prettier --check .",
     "lint:fix": "eslint . --fix && prettier --write .",
     "typecheck": "nuxt typecheck",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "gen:api": "openapi-typescript ${NUXT_API_INTERNAL_URL:-https://localhost}/api/v1/openapi.json -o app/types/api.ts"
   },
   "prettier": {
     "semi": false,
@@ -32,15 +34,30 @@
     }
   },
   "dependencies": {
+    "@nuxt/fonts": "^0.14.0",
+    "@nuxtjs/sitemap": "^8.6.1",
+    "@pinia/nuxt": "^1.0.2",
+    "@takumi-rs/core": "^2.14.0",
+    "@vueuse/core": "^15.0.0",
+    "@vueuse/nuxt": "^15.0.0",
     "nuxt": "^4.5.2",
+    "nuxt-og-image": "^6.10.0",
+    "pinia": "^4.0.3",
+    "valibot": "^1.5.0",
     "vue": "^3.5.43",
-    "vue-router": "^5.3.1"
+    "vue-router": "^5.3.1",
+    "wavesurfer.js": "^7.12.12"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@nuxt/eslint": "^1.17.0",
+    "@playwright/test": "^1.63.0",
+    "@tailwindcss/vite": "^4.3.3",
     "eslint": "^10.11.0",
     "eslint-config-prettier": "^10.1.8",
+    "openapi-typescript": "^7.13.0",
     "prettier": "^3.9.9",
+    "tailwindcss": "^4.3.3",
     "typescript": "^5.9.3",
     "vitest": "^5.0.2",
     "vue-tsc": "^3.3.11"

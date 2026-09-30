@@ -1,0 +1,5 @@
+Hola {{ name }},
+
+Recibimos tu mensaje. Te escribimos pronto desde Cherry Studios.
+
+Ciudad de México

@@ -16,6 +16,7 @@
 | Q9 | ¿Sincronizar el calendario de sesiones (Fase 2) con Google Calendar? | Ya tienen un Google Calendar. No se sincroniza en esta fase. |
 | Q10 | ¿TikTok, YouTube, Spotify del estudio? | Solo Instagram. |
 | Q11 | “Ocho formas de trabajar tu proyecto” vs. 7 opciones del template | Quedan los 8 servicios. Producciones (EP / Álbum) ya está en el HTML. El select sale de la API: 8 servicios + “Aún no estoy seguro”. |
+| Q12 | ¿Qué hace el worker antes de la cola de jobs? | El comando `python -m app.workers` reclama jobs con `SKIP LOCKED` y procesa imagen y audio. |
 
 ## Parcial
 
@@ -27,11 +28,15 @@
 
 | # | Pregunta | Supuesto actual | Impacto si cambia |
 |---|----------|-----------------|-------------------|
-| Q12 | ¿Qué hace el worker antes de la cola de jobs (T-06)? | Proceso estable que espera SIGTERM y registra `worker_waiting`. No procesa medios. | Sustituir `python -m app.workers` por el loop real. |
 | Q13 | ¿Qué tags exactos de imágenes base usamos? | Parches fijados: Caddy `2.11.4`, Postgres `17.11`, Node `22.23.3`, Python `3.12.14`, uv `0.12.19`, Mailpit `v1.31.3`. | Cambiar el tag en Dockerfiles y compose. |
 | Q14 | ¿El Caddyfile de desarrollo incluye HSTS? | No. `infra/Caddyfile` sirve `localhost` con `tls internal`, sin HSTS. El bloque de producción de `06-despliegue.md` se aplica en T-25. | Añadir cabeceras al pasar a producción. |
 | Q15 | ¿Las imágenes de desarrollo corren sin root? | El target `runtime` sí (usuario `app` / `node`). El target `dev` corre como root para que el hot reload escriba en el bind mount. | Endurecer el target `dev` si el equipo lo pide. |
 | Q16 | ¿Qué código de error usa `/api/ready` si la base no responde? | HTTP 503, `{"error":{"code":"unavailable","message":"La base de datos no está disponible."}}`. | Ajustar el código si se acuerda otro. |
+| Q17 | ¿Qué texto largo usan servicios y bios si el template solo trae el corto? | `long_description` y `bio_long` copian el texto corto. El admin puede ampliarlos después. | Reemplazar el seed si llega copy largo. |
+| Q18 | Neto es MP3 propio y también YouTube. El modelo tiene un solo `kind`. | `kind=own_audio`, audio en `audio_after_media_id`, YouTube en `external_url`, `external_id` y `youtube_start_s=137`. | Partir la pieza en dos filas si el admin lo prefiere. |
+| Q19 | El seed de `/links` pide WhatsApp y Spotify, pero no hay número (Q2) ni perfil de Spotify (Q10). | Esos dos enlaces se crean sin publicar. Contacto, Instagram y Portafolio sí. | Publicarlos cuando existan URL reales. |
+| Q20 | ¿Cuál es el límite de `POST /portfolio/{slug}/events`? | 60 por minuto por `ip_hash` (IP + `IP_HASH_SALT`, confiando en `X-Forwarded-For`). | Ajustar el número si se quiere otro tope. |
+| Q21 | ¿Nuxt Image optimiza los archivos de `/media`? | No. Caddy ya sirve WebP/AVIF con hash. El sitio usa `<picture>` con esas URLs. IPX dentro del contenedor `web` no alcanza el volumen de medios. | Cambiar a `@nuxt/image` si los medios se publican en un origen que el contenedor pueda leer. |
 
 ## Datos para el correo en Google Workspace
 

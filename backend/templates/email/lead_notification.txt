@@ -1,0 +1,9 @@
+Nuevo contacto en Cherry Studios
+
+Nombre: {{ name }}
+Correo: {{ email }}
+Teléfono: {{ phone }}
+Servicio: {{ service }}
+Página: {{ source_page }}
+Mensaje:
+{{ message }}

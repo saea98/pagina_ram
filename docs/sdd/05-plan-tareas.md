@@ -12,22 +12,22 @@
 
 ## Hito 1 · Datos y API pública
 
-- [ ] **T-05 · Modelos + migración inicial** — todas las tablas Fase 1 de `03-modelo-datos.md`. *Salida:* `alembic upgrade head` limpio; test que verifica que el modelo coincide con la migración (`alembic check`).
-- [ ] **T-06 · Storage + MediaAsset + worker** — `StorageBackend` local, subida streaming, validación magic bytes, cola `jobs` con `SKIP LOCKED`, procesamiento imagen (WebP/AVIF/LQIP) y audio (m4a/mp3, LUFS, peaks). Imagen Docker del backend incluye `ffmpeg`. *RF-22.* *Salida:* test sube WAV de 5 s → queda `ready` con LUFS y peaks.
-- [ ] **T-07 · Seed desde el template** — *RF-01..RF-11.* Copia imágenes/audio de `cherry-studios-site/` vía pipeline de medios. *Salida:* `python -m app.seed` idempotente.
-- [ ] **T-08 · Endpoints públicos de lectura** — `/site`, `/home`, `/services`, `/team`, `/portfolio`, `/testimonials`, `/faqs`, `/links`, `/legal/privacy` con caché/ETag. *Salida:* tests por endpoint; OpenAPI publicado.
-- [ ] **T-09 · Leads público** — `POST /leads`, `/leads/uploads`, honeypot, rate limit (`slowapi`), Turnstile opcional, `ip_hash`, correo de notificación y acuse vía job. *RF-07.* *Salida:* tests de validación, honeypot, rate limit y email (SMTP falso tipo `aiosmtpd`/Mailpit en dev).
+- [x] **T-05 · Modelos + migración inicial** — todas las tablas Fase 1 de `03-modelo-datos.md`. *Salida:* `alembic upgrade head` limpio; test que verifica que el modelo coincide con la migración (`alembic check`).
+- [x] **T-06 · Storage + MediaAsset + worker** — `StorageBackend` local, subida streaming, validación magic bytes, cola `jobs` con `SKIP LOCKED`, procesamiento imagen (WebP/AVIF/LQIP) y audio (m4a/mp3, LUFS, peaks). Imagen Docker del backend incluye `ffmpeg`. *RF-22.* *Salida:* test sube WAV de 5 s → queda `ready` con LUFS y peaks.
+- [x] **T-07 · Seed desde el template** — *RF-01..RF-11.* Copia imágenes/audio de `cherry-studios-site/` vía pipeline de medios. *Salida:* `python -m app.seed` idempotente.
+- [x] **T-08 · Endpoints públicos de lectura** — `/site`, `/home`, `/services`, `/team`, `/portfolio`, `/testimonials`, `/faqs`, `/links`, `/legal/privacy` con caché/ETag. *Salida:* tests por endpoint; OpenAPI publicado.
+- [x] **T-09 · Leads público** — `POST /leads`, `/leads/uploads`, honeypot, rate limit (`slowapi`), Turnstile opcional, `ip_hash`, correo de notificación y acuse vía job. *RF-07.* *Salida:* tests de validación, honeypot, rate limit y email (SMTP falso tipo `aiosmtpd`/Mailpit en dev).
 
 ## Hito 2 · Sitio público
 
-- [ ] **T-10 · Tokens y base visual** — portar `:root` del template a `assets/css/tokens.css`, `@theme` Tailwind, fuentes autoalojadas, utilidades `.wrap`, `.eyebrow`, `.btn-*`, superficies. Ver skill `cherry-brand-ui`. *Salida:* página `/_styleguide` (solo dev) con todos los componentes base.
-- [ ] **T-11 · Layout y navegación** — header fijo con blur, scrollspy, menú móvil, riel de progreso con cereza, footer, pastilla de privacidad, splash (1 vez por sesión). *RF-01.*
-- [ ] **T-12 · Secciones de la portada** — Hero (palabras animadas, parallax), Estudio, Equipo, Servicios (flip accesible), Portafolio destacado, Testimonios, Contacto; todo desde `/public/home`. *RF-01, 02, 05, 06.* *Salida:* comparación visual lado a lado con el template ≥ 95 % fiel.
-- [ ] **T-13 · Formulario de contacto** — validación cliente (zod/valibot), subida de maqueta con progreso, captura UTM (`useUtm`), consentimiento, estados de envío, WhatsApp flotante con mensaje contextual. *RF-07.* *Salida:* e2e Playwright envía lead y aparece en BD.
-- [ ] **T-14 · Reproductor global persistente** — store Pinia, `<GlobalPlayer>` con wavesurfer (peaks precalculados), exclusividad entre fuentes, fachadas para Spotify/YouTube/SoundCloud (`youtube-nocookie`). *RF-03.* *Salida:* e2e: reproducir, navegar a `/portafolio`, el audio sigue.
-- [ ] **T-15 · Comparador A/B** — `<ABPlayer>` Web Audio, cross‑fade, igualación LUFS, teclas A/B, accesible. Sección “Escucha la diferencia”. *RF-04.*
-- [ ] **T-16 · Páginas internas** — `/servicios/[slug]`, `/portafolio` (filtros), `/portafolio/[slug]`, `/equipo/[slug]`, `/aviso-de-privacidad`, `/links`, 404. *RF-02, 03, 05, 08, 10, 12.*
-- [ ] **T-17 · SEO** — `useSeoMeta` por página, JSON‑LD, sitemap, robots, canónicas, OG image dinámica (`nuxt-og-image` o ruta Nitro con Satori). *RF-09.* *Salida:* validador de datos estructurados sin errores; vista previa correcta en WhatsApp/Instagram (probar con opengraph.xyz).
+- [x] **T-10 · Tokens y base visual** — portar `:root` del template a `assets/css/tokens.css`, `@theme` Tailwind, fuentes autoalojadas, utilidades `.wrap`, `.eyebrow`, `.btn-*`, superficies. Ver skill `cherry-brand-ui`. *Salida:* página `/_styleguide` (solo dev) con todos los componentes base.
+- [x] **T-11 · Layout y navegación** — header fijo con blur, scrollspy, menú móvil, riel de progreso con cereza, footer, pastilla de privacidad, splash (1 vez por sesión). *RF-01.*
+- [x] **T-12 · Secciones de la portada** — Hero (palabras animadas, parallax), Estudio, Equipo, Servicios (flip accesible), Portafolio destacado, Testimonios, Contacto; todo desde `/public/home`. *RF-01, 02, 05, 06.* *Salida:* comparación visual lado a lado con el template ≥ 95 % fiel.
+- [x] **T-13 · Formulario de contacto** — validación cliente (zod/valibot), subida de maqueta con progreso, captura UTM (`useUtm`), consentimiento, estados de envío, WhatsApp flotante con mensaje contextual. *RF-07.* *Salida:* e2e Playwright envía lead y aparece en BD.
+- [x] **T-14 · Reproductor global persistente** — store Pinia, `<GlobalPlayer>` con wavesurfer (peaks precalculados), exclusividad entre fuentes, fachadas para Spotify/YouTube/SoundCloud (`youtube-nocookie`). *RF-03.* *Salida:* e2e: reproducir, navegar a `/portafolio`, el audio sigue.
+- [x] **T-15 · Comparador A/B** — `<ABPlayer>` Web Audio, cross‑fade, igualación LUFS, teclas A/B, accesible. Sección “Escucha la diferencia”. *RF-04.*
+- [x] **T-16 · Páginas internas** — `/servicios/[slug]`, `/portafolio` (filtros), `/portafolio/[slug]`, `/equipo/[slug]`, `/aviso-de-privacidad`, `/links`, 404. *RF-02, 03, 05, 08, 10, 12.*
+- [x] **T-17 · SEO** — `useSeoMeta` por página, JSON‑LD, sitemap, robots, canónicas, OG image dinámica (`nuxt-og-image` o ruta Nitro con Satori). *RF-09.* *Salida:* validador de datos estructurados sin errores; vista previa correcta en WhatsApp/Instagram (probar con opengraph.xyz).
 
 ## Hito 3 · Admin
 
