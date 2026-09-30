@@ -15,13 +15,14 @@ html,
 body {
   margin: 0;
   padding: 0;
+  max-width: 100%;
+  overflow-x: clip;
 }
 body {
   background: var(--paper);
   color: var(--ink);
   font-family: 'Work Sans', ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
 }
 img {
   max-width: 100%;
@@ -46,8 +47,10 @@ h3 {
   margin: 0;
 }
 .wrap {
+  width: 100%;
   max-width: var(--maxw);
   margin: 0 auto;
+  min-width: 0;
   padding-left: clamp(20px, 5vw, 56px);
   padding-right: clamp(20px, 5vw, 56px);
 }
@@ -109,6 +112,7 @@ header.nav {
   top: 0;
   left: 0;
   right: 0;
+  max-width: 100%;
   z-index: 50;
   height: var(--nav-h);
   display: flex;
@@ -127,11 +131,12 @@ header.nav.scrolled {
 .nav-inner {
   width: 100%;
   max-width: var(--maxw);
+  min-width: 0;
   margin: 0 auto;
-  padding: 0 clamp(20px, 5vw, 56px);
+  padding: 0 clamp(16px, 4vw, 56px);
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 12px;
 }
 .brand {
   display: flex;
@@ -144,6 +149,8 @@ header.nav.scrolled {
 .brand img {
   height: 52px;
   width: auto;
+  max-width: min(168px, 42vw);
+  object-fit: contain;
   filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.35));
 }
 nav.links {
@@ -186,6 +193,7 @@ nav.links a.active::after {
   transform: scaleX(1);
 }
 .nav-cta {
+  display: none;
   flex: none;
   text-decoration: none;
   background: var(--blush);
@@ -194,6 +202,11 @@ nav.links a.active::after {
   font-size: 1rem;
   padding: 13px 26px;
   border-radius: 999px;
+}
+@media (min-width: 840px) {
+  .nav-cta {
+    display: inline-block;
+  }
 }
 .nav-cta:hover {
   background: var(--cream);
@@ -790,8 +803,11 @@ button.svc-front {
 
 .contact-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 48px;
+}
+.contact-grid > * {
+  min-width: 0;
 }
 @media (min-width: 900px) {
   .contact-grid {
@@ -802,11 +818,15 @@ form.reach {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  min-width: 0;
+  max-width: 100%;
 }
 .field {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  min-width: 0;
+  max-width: 100%;
 }
 .field label {
   font-size: 0.78rem;
@@ -818,7 +838,11 @@ form.reach {
 .field input,
 .field select,
 .field textarea {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   font: inherit;
+  font-size: 16px;
   padding: 14px 16px;
   border-radius: 12px;
   border: 1.5px solid rgba(61, 13, 17, 0.25);
@@ -842,7 +866,14 @@ form.reach {
 }
 .honeypot {
   position: absolute;
-  left: -9999px;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 .reach .submit {
   margin-top: 6px;
@@ -888,13 +919,19 @@ form.reach {
 .direct-row .val {
   font-family: 'Fraunces', serif;
   font-size: 1.15rem;
+  overflow-wrap: anywhere;
 }
 .consent {
   display: flex;
   gap: 10px;
   align-items: flex-start;
+  min-width: 0;
+  max-width: 100%;
   font-size: 0.9rem;
   line-height: 1.5;
+}
+.consent span {
+  min-width: 0;
 }
 .consent input {
   margin-top: 4px;
@@ -928,6 +965,7 @@ footer.site-foot a:hover {
   left: 16px;
   bottom: 16px;
   z-index: 60;
+  display: none;
   text-decoration: none;
   background: rgba(28, 27, 27, 0.88);
   color: rgba(255, 244, 235, 0.85);
@@ -937,6 +975,11 @@ footer.site-foot a:hover {
   border-radius: 999px;
   border: 1px solid rgba(255, 244, 235, 0.18);
   backdrop-filter: blur(6px);
+}
+@media (min-width: 840px) {
+  .privacy-pill {
+    display: inline-block;
+  }
 }
 .privacy-pill:hover {
   background: var(--ink);
