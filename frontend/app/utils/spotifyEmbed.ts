@@ -1,46 +1,40 @@
-export type SpotifyPlayback = {
-  data: {
-    isPaused: boolean
+export const SPOTIFY_ORIGIN = 'https://open.spotify.com'
+
+export function spotifyEmbedSrc(kind: 'track' | 'album', id: string) {
+  return `${SPOTIFY_ORIGIN}/embed/${kind}/${id}?utm_source=iframe-api&theme=0`
+}
+
+export type SpotifyNote = { type: 'ready' } | { type: 'playback'; playing: boolean }
+
+export function readSpotifyMessage(data: unknown): SpotifyNote | null {
+  if (!data || typeof data !== 'object') return null
+  const message = data as { type?: unknown; payload?: { isPaused?: unknown } }
+  if (message.type === 'ready') return { type: 'ready' }
+  if (message.type === 'playback_started') return { type: 'playback', playing: true }
+  if (message.type !== 'playback_update' || typeof message.payload?.isPaused !== 'boolean')
+    return null
+  return { type: 'playback', playing: !message.payload.isPaused }
+}
+
+export function spotifyCommand(command: 'play' | 'pause' | 'ack') {
+  if (command === 'ack') return { command: 'load_complete_ack' }
+  return { command }
+}
+
+type SpotifyHandler = (event: MessageEvent) => void
+
+const handlers = new Set<SpotifyHandler>()
+let listening = false
+
+export function listenSpotify(handler: SpotifyHandler) {
+  if (!listening) {
+    listening = true
+    window.addEventListener('message', (event) => {
+      handlers.forEach((fn) => fn(event))
+    })
   }
-}
-
-export type SpotifyController = {
-  play: () => void
-  pause: () => void
-  destroy: () => void
-  addListener: (event: 'playback_update', callback: (event: SpotifyPlayback) => void) => void
-}
-
-type SpotifyApi = {
-  createController: (
-    element: HTMLElement,
-    options: { uri: string; width: string; height: number },
-    callback: (controller: SpotifyController) => void,
-  ) => void
-}
-
-declare global {
-  interface Window {
-    onSpotifyIframeApiReady?: (api: SpotifyApi) => void
+  handlers.add(handler)
+  return () => {
+    handlers.delete(handler)
   }
-}
-
-let loading: Promise<SpotifyApi> | null = null
-
-export function loadSpotifyEmbedApi(): Promise<SpotifyApi> {
-  if (loading) return loading
-  loading = new Promise((resolve, reject) => {
-    window.onSpotifyIframeApiReady = (api) => {
-      resolve(api)
-    }
-    const script = document.createElement('script')
-    script.src = 'https://open.spotify.com/embed/iframe-api/v1'
-    script.async = true
-    script.onerror = () => {
-      loading = null
-      reject(new Error('No se pudo cargar el reproductor de Spotify.'))
-    }
-    document.head.appendChild(script)
-  })
-  return loading
 }

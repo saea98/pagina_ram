@@ -38,7 +38,7 @@ Ruta Nitro `server/api/_revalidate.post.ts`: valida `X-Internal-Token` y borra l
 - `stores/player.ts`: `current`, `queue`, `isPlaying`, `position`, `duration`, `source: 'own'|'spotify'|'youtube'|…`, acciones `play(item)`, `toggle()`, `seek()`, `stopOthers(sourceId)`.
 - Un solo `HTMLAudioElement` creado en cliente (`onMounted` / `import.meta.client`), vive en `<GlobalPlayer>` del layout → no se destruye al navegar.
 - Waveform con wavesurfer usando **peaks del backend** (`peaks_url`), nunca decodificando el audio completo.
-- Exclusividad: bus `useEventBus('player:exclusive')`; los embeds de Spotify usan su IFrame API (`onSpotifyIframeApiReady`, como el template) y YouTube su IFrame API, ambos escuchan el bus para pausar.
+- Exclusividad: bus `useEventBus('player:exclusive')`. Spotify se controla con `postMessage` al iframe (`utm_source=iframe-api`): el script oficial de la IFrame API usa `eval` y la CSP de producción lo bloquea, así que Escuchar nunca llegaba a habilitarse. YouTube usa su IFrame API. Ambos escuchan el bus para pausar.
 - `<EmbedFacade>`: muestra portada + botón; al clic monta el iframe (`youtube-nocookie.com`). Sin iframes en SSR.
 - Media Session API: título/artista/portada en la pantalla de bloqueo del celular.
 
