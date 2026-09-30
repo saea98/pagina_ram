@@ -124,9 +124,10 @@ async def create_lead(session: AsyncSession, request: Request, body: LeadIn) -> 
         session.add(
             _email_job(
                 template="lead_notification",
-                subject="Nuevo contacto — Cherry Studios",
+                subject=f"Nuevo contacto — {body.name.strip()}",
                 recipients=recipients,
                 reply_to=body.email,
+                from_name=body.name,
                 context=context,
             )
         )
@@ -188,15 +189,19 @@ def _email_job(
     recipients: list[str],
     reply_to: str | None,
     context: dict[str, str],
+    from_name: str | None = None,
 ) -> Job:
+    payload: dict[str, object] = {
+        "template": template,
+        "subject": subject,
+        "to": recipients,
+        "reply_to": reply_to,
+        "context": context,
+    }
+    if from_name:
+        payload["from_name"] = from_name.strip()
     return Job(
         type=JobType.SEND_EMAIL,
-        payload={
-            "template": template,
-            "subject": subject,
-            "to": recipients,
-            "reply_to": reply_to,
-            "context": context,
-        },
+        payload=payload,
         run_after=datetime.now(UTC),
     )

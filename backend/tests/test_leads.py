@@ -105,7 +105,7 @@ async def test_upload_and_notification_email(client: AsyncClient) -> None:
     assert lead.utm_source == "instagram"
     assert int(queued or 0) >= 1
     await _drain_mail("Recibimos tu mensaje — Cherry Studios")
-    await _drain_mail("Nuevo contacto — Cherry Studios")
+    await _drain_mail("Nuevo contacto — Ana López")
 
 
 async def test_turnstile_required_when_configured(

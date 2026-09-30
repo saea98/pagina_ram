@@ -1,4 +1,5 @@
 from email.message import EmailMessage
+from email.utils import formataddr, parseaddr
 from pathlib import Path
 
 import aiosmtplib
@@ -24,7 +25,7 @@ async def deliver(payload: dict[str, object]) -> None:
     subject = str(payload["subject"])
     message = EmailMessage()
     settings = get_settings()
-    message["From"] = settings.smtp_from
+    message["From"] = _from_header(payload.get("from_name"), settings.smtp_from)
     message["To"] = ", ".join(recipients)
     message["Subject"] = subject
     if isinstance(reply_to, str) and reply_to:
@@ -42,3 +43,13 @@ async def deliver(payload: dict[str, object]) -> None:
         password=settings.smtp_password or None,
         start_tls=bool(settings.smtp_user),
     )
+
+
+def _from_header(name: object, smtp_from: str) -> str:
+    _, address = parseaddr(smtp_from)
+    if not isinstance(name, str) or not address:
+        return smtp_from
+    clean = "".join(char for char in name if char not in "\r\n").strip()
+    if not clean:
+        return smtp_from
+    return formataddr((clean, address))
