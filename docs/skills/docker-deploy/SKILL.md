@@ -9,7 +9,7 @@ Referencia completa de servicios, variables y Caddyfile: `docs/sdd/06-despliegue
 
 ## Compose
 - Archivo base `infra/docker-compose.yml` + overrides `docker-compose.dev.yml` y `docker-compose.prod.yml`. Nombre de proyecto: `name: cherry`.
-- Red interna única `internal`; solo `caddy` publica puertos (80/443; en dev también 8025 de Mailpit).
+- Red interna única `internal`; solo `caddy` publica puertos. En local: 80/443 y 8025 (Mailpit). En el servidor compartido (`docker-compose.server.yml`): solo `8090:80`, porque Nginx Proxy Manager ya usa 80/443.
 - Volúmenes nombrados: `pg_data`, `media`, `caddy_data`, `caddy_config`, `backups`.
 - `depends_on` con `condition: service_healthy` (web → api → db).
 - `env_file: .env` + `environment` solo para valores no secretos.

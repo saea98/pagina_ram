@@ -1,3 +1,5 @@
+# Local: https://localhost. No usar este archivo en el servidor compartido:
+# allí el 80 y el 443 ya los publica Nginx Proxy Manager.
 services:
   caddy:
     ports:

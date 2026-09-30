@@ -1,0 +1,15 @@
+# Servidor compartido (Nginx Proxy Manager ya publica 80, 81 y 443).
+# Caddy queda en HTTP en el host 8090. NPM hace de proxy hacia ese puerto.
+services:
+  caddy:
+    ports: !override
+      - "8090:80"
+    volumes: !override
+      - ./Caddyfile.server:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+      - media:/srv/media:ro
+
+  web:
+    environment:
+      NUXT_PUBLIC_SITE_URL: https://cherrystudios.com.mx

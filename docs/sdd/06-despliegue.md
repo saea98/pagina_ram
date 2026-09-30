@@ -4,14 +4,16 @@
 
 - Linux (Ubuntu 24.04 LTS recomendado), **2 vCPU / 4 GB RAM / 40 GB SSD** mínimo (el procesamiento de audio con ffmpeg es lo más pesado).
 - Docker Engine + plugin Compose v2.
-- Puertos 80 y 443 abiertos; 22 solo con llave SSH.
-- DNS: `A`/`AAAA` de `cherrystudios.com.mx` y `www` al servidor (Caddy emite certificados automáticamente).
+- Puertos 80 y 443 los publica **Nginx Proxy Manager** (`jc21/nginx-proxy-manager`), que ya atiende otros sitios. Cherry no los enlaza.
+- Caddy publica solo **HTTP `8090`** (`infra/docker-compose.server.yml` + `Caddyfile.server`). No pide certificado: el TLS lo termina NPM.
+- DNS: `A`/`AAAA` de `cherrystudios.com.mx` y `www` al servidor. En NPM, un proxy host del dominio hacia `http://127.0.0.1:8090`, con websockets activos.
+- 22 solo con llave SSH.
 
 ## Servicios de `docker-compose`
 
 | Servicio | Imagen | Puerto interno | Volúmenes | Healthcheck |
 |----------|--------|----------------|-----------|-------------|
-| `caddy` | `caddy:2.11.4-alpine` | 80, 443 (expuestos) | `caddy_data`, `caddy_config`, `media:ro` | — |
+| `caddy` | `caddy:2.11.4-alpine` | 80 interno; en este servidor el host expone **8090**. En local, 80/443 | `caddy_data`, `caddy_config`, `media:ro` | — |
 | `web` | `ghcr.io/saea98/pagina_ram-web` | 3000 | — | `GET /` |
 | `api` | `ghcr.io/saea98/pagina_ram-api` | 8000 | `media` | `GET /api/ready` |
 | `worker` | misma que `api` (`command: python -m app.workers`) | — | `media` | proceso vivo |
@@ -67,7 +69,9 @@ MAX_UPLOAD_MB_LEAD=30
 SENTRY_DSN=
 ```
 
-## Caddyfile (referencia)
+En este servidor el archivo activo es `infra/Caddyfile.server` (solo `:80`, sin TLS). El bloque de abajo queda para una máquina donde Caddy pueda usar 80/443 (T-25).
+
+## Caddyfile (referencia, máquina dedicada)
 
 ```caddy
 {$DOMAIN}, www.{$DOMAIN} {
@@ -104,17 +108,23 @@ SENTRY_DSN=
 ```
 (La CSP la define Nuxt vía `nuxt-security` para poder usar nonces.)
 
-## Primer despliegue
+## Primer despliegue (servidor compartido)
+
+No uses `docker-compose.dev.yml` aquí: ese archivo publica 80, 443 y 8025.
 
 ```bash
 ssh deploy@servidor
-git clone git@github.com:saea98/pagina_ram.git && cd pagina_ram/infra
-cp .env.example .env && nano .env            # completar secretos
-docker compose -f docker-compose.yml -f docker-compose.prod.yml pull
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
-docker compose exec api alembic upgrade head
-docker compose exec api python -m app.seed
+cd /home/saes98/cherry/cherry
+git pull
+cd infra
+docker compose -f docker-compose.yml -f docker-compose.server.yml up -d --build
+docker compose -f docker-compose.yml -f docker-compose.server.yml exec api alembic upgrade head
+docker compose -f docker-compose.yml -f docker-compose.server.yml exec api python -m app.seed
 ```
+
+En NPM, proxy host `cherrystudios.com.mx` (y `www` → el dominio sin www) hacia `http://127.0.0.1:8090`. Scheme HTTP, websockets on. El certificado lo emite NPM.
+
+El `docker compose` de desarrollo sigue siendo el de local: `docker-compose.yml` + `docker-compose.dev.yml` → `https://localhost`.
 
 ## Despliegues siguientes (CI)
 

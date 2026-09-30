@@ -6,7 +6,8 @@
 
 ```mermaid
 flowchart LR
-  U[Visitante / Admin<br/>navegador] -->|HTTPS 443| C[Caddy<br/>reverse proxy + TLS]
+  U[Visitante / Admin<br/>navegador] -->|HTTPS 443| N[Nginx Proxy Manager<br/>TLS en este servidor]
+  N -->|HTTP 8090| C[Caddy<br/>reverse proxy]
   C -->|/ y /admin| W[web<br/>Nuxt 4 SSR · Node 22]
   C -->|/api/*| A[api<br/>FastAPI · Uvicorn]
   C -->|/media/*| M[(volumen media<br/>archivos estáticos)]
@@ -48,7 +49,7 @@ flowchart LR
 | Almacenamiento | **Volumen Docker `media`** servido por Caddy en `/media` | Simple; respaldable con tar/restic. Interfaz `StorageBackend` para cambiar a S3/R2 sin tocar lógica. | S3 desde día 1: costo/complejidad innecesarios. |
 | Correo | **SMTP de Google Workspace** (`smtp.gmail.com:587`) vía `aiosmtplib` | El dominio ya está en Workspace. En local, Mailpit. | Netlify Forms: lo dejamos al salir de Netlify. |
 | Anti‑spam | Honeypot + `slowapi` rate limit + **Cloudflare Turnstile** opcional | Sin fricción para usuarios reales. | reCAPTCHA: cookies de Google, peor UX. |
-| Proxy/TLS | **Caddy 2** | HTTPS automático (Let’s Encrypt), config mínima, sirve `/media`. | Nginx + certbot: más pasos. |
+| Proxy/TLS | **Caddy 2** detrás de **Nginx Proxy Manager** en el servidor actual | NPM ya ocupa 80/443 y emite el certificado. Caddy sirve el sitio en HTTP `:8090` y `/media`. En una máquina dedicada, Caddy puede volver a terminar TLS (T-25). | Parar NPM para dejarle el 80 a Caddy: tumba el resto de sitios del servidor. |
 | Analítica (F2) | **Umami** autoalojado | Sin cookies, respeta privacidad, mismo Postgres. | Google Analytics: requiere banner de cookies. |
 | CI/CD | **GitHub Actions → GHCR → servidor** (`docker compose pull && up -d`) | Imágenes versionadas, rollback trivial. | Build en el servidor (se permite como plan B). |
 
@@ -99,9 +100,11 @@ pagina_ram/
 │   └── Dockerfile
 └── infra/
     ├── docker-compose.yml       # base
-    ├── docker-compose.dev.yml   # overrides dev (hot reload, puertos)
+    ├── docker-compose.dev.yml   # overrides dev (hot reload, 80/443)
+    ├── docker-compose.server.yml # este servidor: Caddy HTTP en 8090
     ├── docker-compose.prod.yml  # overrides prod (imágenes GHCR, límites)
-    ├── Caddyfile
+    ├── Caddyfile                # localhost + tls internal
+    ├── Caddyfile.server         # HTTP :80, sin certificado propio
     ├── .env.example
     └── scripts/                 # backup.sh, restore.sh, deploy.sh
 ```

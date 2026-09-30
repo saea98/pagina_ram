@@ -22,7 +22,7 @@
 
 | # | Pregunta | Decisión | Supuesto que sigue |
 |---|----------|----------|--------------------|
-| Q4 | Servidor destino | El servidor es propio del estudio, no un proveedor nombrado. | Hasta tener la máquina: Ubuntu 24.04, 2 vCPU / 4 GB, Docker Engine + Compose v2. |
+| Q4 | Servidor destino | Máquina compartida del estudio (`/home/saes98/cherry/cherry`). Nginx Proxy Manager ya publica 80, 81 y 443. | Caddy de Cherry no enlaza esos puertos: HTTP en el host **8090**, TLS en NPM. Ver `docker-compose.server.yml`. |
 
 ## Siguen abiertas
 
