@@ -11,7 +11,6 @@ const name = ref('')
 const contact = ref('')
 const message = ref('')
 const serviceSlug = ref(typeof route.query.servicio === 'string' ? route.query.servicio : '')
-const consent = ref(false)
 const website = ref('')
 const status = ref<'idle' | 'sending' | 'sent' | 'error'>('idle')
 const errors = ref<Record<string, string>>({})
@@ -51,7 +50,7 @@ function validate() {
     email,
     phone,
     message: message.value,
-    consent: consent.value,
+    consent: true,
   })
   if (parsed.success) {
     errors.value = {}
@@ -205,16 +204,12 @@ async function submit() {
           <span class="val">{{ handle }}</span>
         </span>
       </a>
-      <label class="consent">
-        <input v-model="consent" type="checkbox" name="consent" />
-        <span
-          >{{ consentCopy.before
-          }}<NuxtLink v-if="consentCopy.linked" to="/aviso-de-privacidad"
-            >Aviso de privacidad</NuxtLink
-          ><template v-if="consentCopy.linked">.</template></span
-        >
-      </label>
-      <p v-if="errors.consent" class="field-error">{{ errors.consent }}</p>
+      <p class="consent">
+        {{ consentCopy.before
+        }}<NuxtLink v-if="consentCopy.linked" to="/aviso-de-privacidad"
+          >Aviso de privacidad</NuxtLink
+        ><template v-if="consentCopy.linked">.</template>
+      </p>
     </aside>
   </div>
 </template>

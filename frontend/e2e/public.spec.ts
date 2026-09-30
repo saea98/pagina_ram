@@ -41,7 +41,6 @@ test('contact form creates a lead', async ({ page }) => {
   await page.locator('#lead-name').fill('Ada Lovelace')
   await page.locator('#lead-email').fill(`ada-${Date.now()}@example.com`)
   await page.locator('#lead-message').fill('Quiero grabar un EP de cinco temas.')
-  await page.locator('input[name="consent"]').check()
   await page.getByRole('button', { name: 'Enviar mensaje →' }).click()
   await expect(page.locator('#lead-thanks')).toContainText('Recibimos tu mensaje')
 })

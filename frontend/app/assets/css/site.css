@@ -952,22 +952,10 @@ form.reach {
   overflow-wrap: anywhere;
 }
 .consent {
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  min-width: 0;
+  margin: 0;
   max-width: 100%;
   font-size: 0.9rem;
   line-height: 1.5;
-}
-.consent span {
-  min-width: 0;
-}
-.consent input {
-  margin-top: 4px;
-  width: 18px;
-  height: 18px;
-  flex: none;
 }
 .direct-card .consent {
   margin: 0;
