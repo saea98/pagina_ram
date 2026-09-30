@@ -133,10 +133,10 @@ header.nav.scrolled {
   max-width: var(--maxw);
   min-width: 0;
   margin: 0 auto;
-  padding: 0 clamp(16px, 4vw, 56px);
+  padding: 0 clamp(20px, 5vw, 56px);
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 22px;
 }
 .brand {
   display: flex;
@@ -149,8 +149,6 @@ header.nav.scrolled {
 .brand img {
   height: 52px;
   width: auto;
-  max-width: min(168px, 42vw);
-  object-fit: contain;
   filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.35));
 }
 nav.links {
@@ -193,7 +191,6 @@ nav.links a.active::after {
   transform: scaleX(1);
 }
 .nav-cta {
-  display: none;
   flex: none;
   text-decoration: none;
   background: var(--blush);
@@ -202,11 +199,6 @@ nav.links a.active::after {
   font-size: 1rem;
   padding: 13px 26px;
   border-radius: 999px;
-}
-@media (min-width: 840px) {
-  .nav-cta {
-    display: inline-block;
-  }
 }
 .nav-cta:hover {
   background: var(--cream);
@@ -547,10 +539,16 @@ p.lede {
     gap: 40px;
   }
 }
+.team-head {
+  max-width: 640px;
+}
+.surface-blush .team-head .eyebrow {
+  color: var(--cherry);
+}
 .founder {
   background: var(--cream);
   border-radius: 22px;
-  padding: 22px;
+  padding: 30px;
   display: flex;
   gap: 22px;
   box-shadow: 0 14px 30px rgba(61, 13, 17, 0.14);
@@ -558,33 +556,20 @@ p.lede {
   text-decoration: none;
   color: inherit;
 }
-.founder > div {
-  flex: 1;
-  min-width: 0;
+.founder picture,
+.founder img {
+  width: 96px;
+  height: 96px;
+  flex: none;
 }
 .founder picture {
   display: block;
-  flex: none;
-  width: clamp(148px, 38%, 210px);
 }
 .founder img {
-  width: 100%;
-  height: auto;
-  aspect-ratio: 4 / 5;
-  border-radius: 18px;
+  border-radius: 50%;
   object-fit: cover;
   object-position: center 18%;
   box-shadow: 0 0 0 4px var(--paper);
-}
-@media (max-width: 640px) {
-  .founder {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .founder picture {
-    width: min(100%, 280px);
-    margin-inline: auto;
-  }
 }
 .founder h3 {
   font-size: 1.28rem;
@@ -626,48 +611,47 @@ p.lede {
 }
 .svc-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-  align-items: start;
-}
-@media (min-width: 700px) {
-  .svc-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-@media (min-width: 1100px) {
-  .svc-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
+  grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
+  gap: 20px;
 }
 .svc-card {
-  display: flex;
-  flex-direction: column;
-  min-height: 220px;
-  border-radius: 20px;
-  background: var(--maroon);
-  color: var(--cream);
-  overflow: hidden;
-}
-.svc-card.flipped {
-  background: var(--cherry);
-}
-button.svc-front {
-  width: 100%;
-  border: 0;
-  cursor: pointer;
+  all: unset;
   font: inherit;
+  color: inherit;
+  cursor: pointer;
+  perspective: 1400px;
+  display: block;
+  width: 100%;
+  height: 230px;
+  border-radius: 20px;
+}
+.svc-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
   text-align: left;
-  color: var(--cream);
-  background: transparent;
+  transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+}
+.svc-card[aria-pressed='true'] .svc-inner {
+  transform: rotateY(180deg);
 }
 .svc-face {
-  position: relative;
-  flex: 1;
+  position: absolute;
+  inset: 0;
   border-radius: 20px;
-  padding: 26px 26px 8px;
+  padding: 26px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   display: flex;
   flex-direction: column;
+}
+.svc-front {
+  background: var(--maroon);
+  color: var(--cream);
+  justify-content: space-between;
 }
 .svc-front .num {
   font-size: 0.75rem;
@@ -687,30 +671,34 @@ button.svc-front {
   color: var(--cream);
 }
 .svc-front .tap {
-  font-size: 0.8rem;
-  color: var(--blush);
-  margin-top: auto;
-  padding-top: 16px;
+  font-size: 0.74rem;
+  color: rgba(255, 244, 235, 0.6);
+  margin-top: 12px;
 }
-.svc-copy {
-  font-family: 'Work Sans', ui-sans-serif, system-ui, sans-serif;
-  font-size: 0.92rem;
-  font-weight: 400;
-  line-height: 1.55;
-  margin: 12px 0 0;
+.svc-back {
+  background: var(--cherry);
+  color: var(--cream);
+  transform: rotateY(180deg);
+  justify-content: center;
+}
+.svc-back h3 {
+  font-size: 1.02rem;
+  font-weight: 600;
+  margin-bottom: 8px;
   color: var(--cream);
 }
-.svc-quote {
-  display: inline-block;
-  margin: 0 26px 22px;
-  color: var(--blush);
-  font-weight: 700;
-  font-size: 0.84rem;
-  text-decoration: none;
+.svc-back p {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  margin: 0;
+  color: var(--cream);
 }
 @media (hover: hover) {
-  .svc-card:hover {
+  .svc-card:hover .svc-inner {
     transform: translateY(-4px);
+  }
+  .svc-card[aria-pressed='true']:hover .svc-inner {
+    transform: rotateY(180deg) translateY(-4px);
   }
 }
 
@@ -801,6 +789,13 @@ button.svc-front {
   height: 100%;
 }
 
+.contact-intro {
+  max-width: 620px;
+  margin-bottom: 48px;
+}
+.surface-blush .contact-intro .eyebrow {
+  color: var(--cherry);
+}
 .contact-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -910,6 +905,13 @@ form.reach {
   justify-content: center;
   flex: none;
 }
+.direct-row .ic svg {
+  width: 20px;
+  height: 20px;
+}
+.direct-row:hover .val {
+  text-decoration: underline;
+}
 .direct-row .lbl {
   font-size: 0.72rem;
   letter-spacing: 0.1em;
@@ -937,6 +939,16 @@ form.reach {
   margin-top: 4px;
   width: 18px;
   height: 18px;
+  flex: none;
+}
+.direct-card .consent {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--blush);
+  line-height: 1.6;
+}
+.direct-card .consent a {
+  color: var(--cream);
 }
 
 footer.site-foot {
@@ -965,7 +977,6 @@ footer.site-foot a:hover {
   left: 16px;
   bottom: 16px;
   z-index: 60;
-  display: none;
   text-decoration: none;
   background: rgba(28, 27, 27, 0.88);
   color: rgba(255, 244, 235, 0.85);
@@ -975,11 +986,6 @@ footer.site-foot a:hover {
   border-radius: 999px;
   border: 1px solid rgba(255, 244, 235, 0.18);
   backdrop-filter: blur(6px);
-}
-@media (min-width: 840px) {
-  .privacy-pill {
-    display: inline-block;
-  }
 }
 .privacy-pill:hover {
   background: var(--ink);

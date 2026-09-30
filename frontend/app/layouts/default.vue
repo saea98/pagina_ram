@@ -7,7 +7,7 @@ const store = usePlayerStore()
 
 <template>
   <div :class="{ 'has-player': Boolean(store.current) }">
-    <SiteSplash :site="site" />
+    <SiteSplash />
     <SiteHeader :site="site" />
     <SiteProgressRail />
     <slot />

@@ -1,14 +1,10 @@
 <script setup lang="ts">
 import type { Site } from '~/types/public'
-import { siteImage } from '~/utils/media'
 
-const props = defineProps<{ site?: Site | null }>()
+defineProps<{ site?: Site | null }>()
 const open = ref(false)
 const scrolled = ref(false)
 const active = ref('')
-const logo = computed(() =>
-  props.site ? siteImage(props.site, props.site.brand.logo_alt_media_id) : null,
-)
 
 const links = [
   { href: '/#estudio', id: 'estudio', label: 'Estudio' },
@@ -50,12 +46,7 @@ onMounted(() => {
   <header class="nav" :class="{ scrolled }">
     <div class="nav-inner">
       <NuxtLink class="brand" to="/#inicio">
-        <img
-          v-if="logo"
-          :src="logo.webp['480'] || Object.values(logo.webp)[0]"
-          :alt="site?.brand.name || 'Cherry Studios'"
-        />
-        <span v-else>{{ site?.brand.name || 'Cherry Studios' }}</span>
+        <img src="/brand/logo-color.png" :alt="site?.brand.name || 'Cherry Studios'" />
       </NuxtLink>
       <nav class="links" aria-label="Secciones">
         <NuxtLink

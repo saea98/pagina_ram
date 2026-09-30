@@ -37,7 +37,10 @@ def render_image(
         image = ImageOps.exif_transpose(raw)
         if image is None:
             image = raw
-        image = image.convert("RGB")
+        has_alpha = image.mode in {"RGBA", "LA"} or (
+            image.mode == "P" and "transparency" in image.info
+        )
+        image = image.convert("RGBA" if has_alpha else "RGB")
         width, height = image.size
         variants: dict[str, object] = {"webp": {}, "avif": {}}
         webp: dict[str, str] = {}

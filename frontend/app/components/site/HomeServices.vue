@@ -2,7 +2,11 @@
 import type { ServiceCard, Site } from '~/types/public'
 
 defineProps<{ site: Site; services: ServiceCard[] }>()
-const open = ref<string | null>(null)
+const open = ref<Record<string, boolean>>({})
+
+function toggle(slug: string) {
+  open.value = { ...open.value, [slug]: !open.value[slug] }
+}
 </script>
 
 <template>
@@ -15,32 +19,27 @@ const open = ref<string | null>(null)
         <p v-if="site.services.hint" class="svc-hint">{{ site.services.hint }}</p>
       </div>
       <div class="svc-grid">
-        <article
+        <button
           v-for="service in services"
           :key="service.slug"
+          type="button"
           class="svc-card"
-          :class="{ flipped: open === service.slug }"
+          :aria-pressed="Boolean(open[service.slug])"
+          @click="toggle(service.slug)"
         >
-          <button
-            type="button"
-            class="svc-face svc-front"
-            :aria-pressed="open === service.slug"
-            :aria-expanded="open === service.slug"
-            @click="open = open === service.slug ? null : service.slug"
-          >
-            <div class="num">{{ service.number_label }}</div>
-            <SiteServiceIcon :name="service.icon" />
-            <h3>{{ service.title }}</h3>
-            <p v-if="open === service.slug" class="svc-copy">{{ service.short_description }}</p>
-            <span v-else class="tap">{{ site.services.hint }}</span>
-          </button>
-          <NuxtLink
-            v-if="open === service.slug"
-            class="svc-quote"
-            :to="`/servicios/${service.slug}`"
-            >Cotizar este servicio</NuxtLink
-          >
-        </article>
+          <div class="svc-inner">
+            <div class="svc-face svc-front">
+              <span class="num">{{ service.number_label }}</span>
+              <SiteServiceIcon :name="service.icon" />
+              <h3>{{ service.title }}</h3>
+              <span class="tap">Ver detalle →</span>
+            </div>
+            <div class="svc-face svc-back">
+              <h3>{{ service.title }}</h3>
+              <p>{{ service.short_description }}</p>
+            </div>
+          </div>
+        </button>
       </div>
     </div>
   </section>

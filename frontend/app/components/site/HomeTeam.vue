@@ -7,7 +7,7 @@ defineProps<{ site: Site; team: TeamCard[] }>()
 <template>
   <section id="equipo" class="surface-blush section-pad">
     <div class="wrap">
-      <div class="svc-head reveal">
+      <div class="team-head reveal">
         <p class="eyebrow">{{ site.team.eyebrow }}</p>
         <h2 class="h-lg">{{ site.team.title }}</h2>
       </div>
@@ -20,8 +20,11 @@ defineProps<{ site: Site; team: TeamCard[] }>()
         >
           <SiteCherryPicture :image="member.photo" class-name="founder-photo" />
           <div>
-            <div class="role">{{ member.role_label }}</div>
-            <h3>{{ member.full_name }}</h3>
+            <h3>
+              {{ member.full_name
+              }}<template v-if="member.nickname"> — “{{ member.nickname }}”</template>
+            </h3>
+            <p class="role">{{ member.role_label }}</p>
             <p>{{ member.bio_short }}</p>
           </div>
         </NuxtLink>
