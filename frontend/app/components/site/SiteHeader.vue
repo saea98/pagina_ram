@@ -19,16 +19,22 @@ function close() {
   open.value = false
 }
 
-onMounted(() => {
-  const onScroll = () => {
-    scrolled.value = window.scrollY > 12
+let spy: IntersectionObserver | null = null
+
+function syncSpy() {
+  spy?.disconnect()
+  spy = null
+  if (route.path !== '/') {
+    active.value = ''
+    return true
   }
-  onScroll()
-  window.addEventListener('scroll', onScroll, { passive: true })
+  const hash = route.hash.replace('#', '')
+  active.value = links.some((link) => link.id === hash) ? hash : ''
   const sections = links
     .map((link) => document.getElementById(link.id))
     .filter((section): section is HTMLElement => section !== null)
-  const spy = new IntersectionObserver(
+  if (!sections.length) return false
+  spy = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
         if (entry.isIntersecting) active.value = entry.target.id
@@ -36,12 +42,30 @@ onMounted(() => {
     },
     { rootMargin: '-45% 0px -50% 0px', threshold: 0 },
   )
-  sections.forEach((section) => spy.observe(section))
+  sections.forEach((section) => spy?.observe(section))
+  return true
+}
+
+onMounted(() => {
+  const onScroll = () => {
+    scrolled.value = window.scrollY > 12
+  }
+  onScroll()
+  window.addEventListener('scroll', onScroll, { passive: true })
+  syncSpy()
   onUnmounted(() => {
     window.removeEventListener('scroll', onScroll)
-    spy.disconnect()
+    spy?.disconnect()
   })
 })
+
+watch(
+  () => route.fullPath,
+  async () => {
+    await nextTick()
+    if (!syncSpy() && route.path === '/') requestAnimationFrame(() => syncSpy())
+  },
+)
 </script>
 
 <template>
