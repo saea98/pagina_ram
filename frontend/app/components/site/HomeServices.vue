@@ -15,37 +15,32 @@ const open = ref<string | null>(null)
         <p v-if="site.services.hint" class="svc-hint">{{ site.services.hint }}</p>
       </div>
       <div class="svc-grid">
-        <div
+        <article
           v-for="service in services"
           :key="service.slug"
-          class="svc-card reveal"
+          class="svc-card"
           :class="{ flipped: open === service.slug }"
         >
-          <div class="svc-inner">
-            <button
-              type="button"
-              class="svc-face svc-front"
-              :aria-pressed="open === service.slug"
-              :aria-label="service.title"
-              :inert="open === service.slug"
-              @click="open = open === service.slug ? null : service.slug"
-            >
-              <div>
-                <div class="num">{{ service.number_label }}</div>
-                <SiteServiceIcon :name="service.icon" />
-                <h3>{{ service.title }}</h3>
-              </div>
-              <div class="tap">{{ site.services.hint }}</div>
-            </button>
-            <div class="svc-face svc-back" :inert="open !== service.slug">
-              <h3>{{ service.title }}</h3>
-              <p>{{ service.short_description }}</p>
-              <NuxtLink class="svc-quote" :to="`/servicios/${service.slug}`"
-                >Cotizar este servicio</NuxtLink
-              >
-            </div>
-          </div>
-        </div>
+          <button
+            type="button"
+            class="svc-face svc-front"
+            :aria-pressed="open === service.slug"
+            :aria-expanded="open === service.slug"
+            @click="open = open === service.slug ? null : service.slug"
+          >
+            <div class="num">{{ service.number_label }}</div>
+            <SiteServiceIcon :name="service.icon" />
+            <h3>{{ service.title }}</h3>
+            <p v-if="open === service.slug" class="svc-copy">{{ service.short_description }}</p>
+            <span v-else class="tap">{{ site.services.hint }}</span>
+          </button>
+          <NuxtLink
+            v-if="open === service.slug"
+            class="svc-quote"
+            :to="`/servicios/${service.slug}`"
+            >Cotizar este servicio</NuxtLink
+          >
+        </article>
       </div>
     </div>
   </section>

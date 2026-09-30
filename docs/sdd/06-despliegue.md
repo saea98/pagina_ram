@@ -7,7 +7,7 @@
 - Puertos 80 y 443 los publica **Nginx Proxy Manager** (`jc21/nginx-proxy-manager`), que ya atiende otros sitios. Cherry no los enlaza.
 - Caddy publica solo **HTTP `8090`** (`infra/docker-compose.server.yml` + `Caddyfile.server`). No pide certificado: el TLS lo termina NPM.
 - El frontend de Cherry escucha en el **3010** de la red interna. El 3000 del host lo usa otro proyecto; el 3001 queda reservado para Umami.
-- DNS: `A`/`AAAA` de `cherrystudios.com.mx` y `www` al servidor. En NPM, un proxy host del dominio hacia `http://127.0.0.1:8090`, con websockets activos.
+- DNS: `A`/`AAAA` de `cherrystudios.com.mx` y `www` al servidor. En NPM, un proxy host del dominio hacia el **gateway de Docker** en el puerto 8090 (no `127.0.0.1`: NPM corre en un contenedor y esa dirección es él mismo). Websockets activos. El 8090 no se abre en el firewall de GCP: solo 80 y 443, que ya usa NPM.
 - 22 solo con llave SSH.
 
 ## Servicios de `docker-compose`
@@ -135,7 +135,7 @@ docker compose -f docker-compose.yml -f docker-compose.server.yml exec api pytho
 # No hace falta meter esa carpeta en la imagen.
 ```
 
-En NPM, proxy host `cherrystudios.com.mx` (y `www` → el dominio sin www) hacia `http://127.0.0.1:8090`. Scheme HTTP, websockets on. El certificado lo emite NPM.
+En NPM, proxy host `cherrystudios.com.mx` (y `www` → el dominio sin www) hacia `http://<gateway-docker>:8090`. Scheme HTTP, websockets on. El certificado lo emite NPM. El gateway sale de `ip -4 addr show docker0` (suele ser `172.17.0.1`).
 
 El `docker compose` de desarrollo sigue siendo el de local: `docker-compose.yml` + `docker-compose.dev.yml` → `https://localhost`.
 

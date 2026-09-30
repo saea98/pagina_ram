@@ -9,9 +9,11 @@ let wave: { destroy: () => void } | null = null
 
 function start(track: PlayerTrack) {
   const element = audio.value
-  if (!element) return
+  if (!element || !track.audioUrl) return
   element.src = track.audioUrl
-  void element.play()
+  void element.play().catch(() => {
+    store.pause()
+  })
   void mountWave(track)
 }
 

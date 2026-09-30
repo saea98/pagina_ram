@@ -5,7 +5,8 @@ defineProps<{ site: Site; portfolio: PortfolioCard[] }>()
 const store = usePlayerStore()
 
 function listen(piece: PortfolioCard) {
-  if (!piece.audio) return
+  const audioUrl = piece.audio?.m4a_url || piece.audio?.mp3_url || ''
+  if (!piece.audio || !audioUrl) return
   if (store.current?.id === piece.slug && store.isPlaying) {
     store.toggle()
     return
@@ -15,7 +16,7 @@ function listen(piece: PortfolioCard) {
     title: piece.title,
     artist: piece.artist_name,
     coverUrl: piece.cover ? (piece.cover.webp['480'] ?? null) : null,
-    audioUrl: piece.audio.m4a_url || piece.audio.mp3_url || '',
+    audioUrl,
     peaksUrl: piece.audio.peaks_url,
     duration: piece.audio.duration_s,
     lufs: piece.audio.lufs,

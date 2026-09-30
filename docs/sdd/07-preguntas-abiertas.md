@@ -22,7 +22,7 @@
 
 | # | Pregunta | Decisión | Supuesto que sigue |
 |---|----------|----------|--------------------|
-| Q4 | Servidor destino | Máquina compartida del estudio (`/home/saes98/cherry/cherry`). Nginx Proxy Manager ya publica 80, 81 y 443. | Caddy de Cherry no enlaza esos puertos: HTTP en el host **8090**, TLS en NPM. Ver `docker-compose.server.yml`. |
+| Q4 | Servidor destino | Máquina compartida del estudio (`/home/saes98/cherry/cherry`). Nginx Proxy Manager ya publica 80, 81 y 443. | Caddy de Cherry no enlaza esos puertos: HTTP en el host **8090**, TLS en NPM. NPM está en Docker, así que el upstream es el gateway de Docker (`172.17.0.1:8090`), no `127.0.0.1`. El firewall de GCP no abre el 8090. |
 
 ## Siguen abiertas
 
