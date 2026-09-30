@@ -256,9 +256,11 @@ async function preview() {
       Hay audio de antes y después. El comparador se muestra en el sitio.
     </p>
     <p v-if="error" class="admin-error">{{ error }}</p>
-    <button v-if="section.preview" class="admin-chip" type="button" @click="preview">
-      Vista previa
-    </button>
-    <button class="admin-save" type="submit">Guardar</button>
+    <div class="admin-form-actions">
+      <button v-if="section.preview" class="admin-chip" type="button" @click="preview">
+        Vista previa
+      </button>
+      <button class="admin-save" type="submit">Guardar</button>
+    </div>
   </form>
 </template>

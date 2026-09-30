@@ -43,6 +43,12 @@ function ago(iso: string) {
 }
 
 await load()
+
+let searchTimer = 0
+watch(q, () => {
+  window.clearTimeout(searchTimer)
+  searchTimer = window.setTimeout(() => void load(), 250)
+})
 </script>
 
 <template>
@@ -68,17 +74,22 @@ await load()
         {{ label }}
       </button>
     </div>
-    <input v-model="q" class="admin-search" type="search" placeholder="Buscar" @change="load" />
-    <p v-if="!items.length">No hay mensajes con ese filtro.</p>
+    <input v-model="q" class="admin-search" type="search" placeholder="Buscar por nombre" />
+    <p v-if="!items.length" class="admin-empty">No hay mensajes con ese filtro.</p>
     <NuxtLink
       v-for="lead in items"
       :key="lead.id"
-      class="admin-card"
+      class="admin-card admin-lead"
       :to="`/admin/leads/${lead.id}`"
     >
-      <strong>{{ lead.name }}</strong>
-      <span>{{ lead.service_title ?? 'Sin servicio' }} · {{ labels[lead.status] }}</span>
-      <span>{{ lead.utm_source ?? 'directo' }} · {{ ago(lead.created_at) }}</span>
+      <span class="admin-card-main">
+        <strong>{{ lead.name }}</strong>
+        <span
+          >{{ lead.service_title ?? 'Sin servicio' }} · {{ lead.utm_source ?? 'directo' }} ·
+          {{ ago(lead.created_at) }}</span
+        >
+      </span>
+      <span class="admin-pill" :data-status="lead.status">{{ labels[lead.status] }}</span>
     </NuxtLink>
     <a class="admin-chip" href="/api/v1/admin/leads/export.csv">Exportar CSV</a>
   </div>

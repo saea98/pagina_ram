@@ -17,6 +17,12 @@ async function load() {
 
 await load()
 
+let searchTimer = 0
+watch(query, () => {
+  window.clearTimeout(searchTimer)
+  searchTimer = window.setTimeout(() => void load(), 250)
+})
+
 async function persistOrder() {
   await api.reorder(rows.value.map((row) => row.id))
   toast.value = 'Orden guardado'
@@ -40,7 +46,11 @@ async function toggle(row: ResourceRow) {
 }
 
 async function remove(row: ResourceRow) {
-  if (!confirm(`¿Ocultar “${props.section.label(row)}”? Puedes recuperarlo solo desde la base.`))
+  if (
+    !confirm(
+      `¿Eliminar “${props.section.label(row)}”? Deja de mostrarse en el sitio. Esta acción no se deshace desde el panel.`,
+    )
+  )
     return
   try {
     await api.remove(row.id)
@@ -54,13 +64,12 @@ async function remove(row: ResourceRow) {
 
 <template>
   <h1>{{ section.title }}</h1>
-  <input v-model="query" class="admin-search" type="search" placeholder="Buscar" @change="load" />
-  <p v-if="!rows.length" class="admin-hint">
-    {{ section.empty }}
-    <NuxtLink :to="`/admin/${sectionKey}/nuevo`">Agregar</NuxtLink>
+  <input v-model="query" class="admin-search" type="search" placeholder="Buscar" @search="load" />
+  <p v-if="!rows.length" class="admin-empty">
+    {{ query ? 'Nada coincide con esa búsqueda.' : section.empty }}
   </p>
   <article v-for="(row, index) in rows" :key="row.id" class="admin-card">
-    <div class="admin-actions">
+    <div class="admin-order">
       <button class="admin-icon-btn" type="button" aria-label="Subir" @click="move(index, -1)">
         ↑
       </button>
@@ -68,20 +77,22 @@ async function remove(row: ResourceRow) {
         ↓
       </button>
     </div>
-    <NuxtLink :to="`/admin/${sectionKey}/${row.id}`">
+    <NuxtLink class="admin-card-main" :to="`/admin/${sectionKey}/${row.id}`">
       <strong>{{ section.label(row) }}</strong>
       <span>{{ section.meta(row) }}</span>
     </NuxtLink>
     <div class="admin-actions">
       <button
-        class="admin-icon-btn"
+        class="admin-icon-btn admin-status"
         type="button"
         :aria-pressed="Boolean(row.is_published)"
         @click="toggle(row)"
       >
         {{ row.is_published ? 'Publicado' : 'Oculto' }}
       </button>
-      <button class="admin-icon-btn" type="button" @click="remove(row)">Borrar</button>
+      <button class="admin-icon-btn admin-danger" type="button" @click="remove(row)">
+        Eliminar
+      </button>
     </div>
   </article>
   <p v-if="error" class="admin-error">{{ error }}</p>

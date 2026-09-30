@@ -11,6 +11,12 @@ interface MediaItem {
   kind: string
 }
 const kind = ref('')
+const statusLabel: Record<string, string> = {
+  uploaded: 'En cola',
+  processing: 'Procesando',
+  ready: 'Listo',
+  failed: 'Falló',
+}
 const items = ref<MediaItem[]>([])
 
 async function load() {
@@ -61,7 +67,10 @@ await load()
       />
       <div>
         <strong>{{ item.original_filename }}</strong>
-        <span>{{ item.status }} · {{ item.alt_text ?? 'Sin texto alternativo' }}</span>
+        <span
+          >{{ statusLabel[item.status] ?? item.status }} ·
+          {{ item.alt_text ?? 'Sin texto alternativo' }}</span
+        >
       </div>
     </article>
   </div>
