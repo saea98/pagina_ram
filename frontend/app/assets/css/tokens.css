@@ -6,7 +6,7 @@
   --cherry-2: #9e1613;
   --blush: #ffbec5;
   --cream: #fff4eb;
-  --paper: #fffaf5;
+  --paper: #fff4eb;
   --on-dark: var(--cream);
   --line-dark: rgba(255, 244, 235, 0.18);
   --line-light: rgba(61, 13, 17, 0.14);
@@ -27,7 +27,7 @@
   --color-cherry-2: #9e1613;
   --color-blush: #ffbec5;
   --color-cream: #fff4eb;
-  --color-paper: #fffaf5;
+  --color-paper: #fff4eb;
   --font-serif: 'Fraunces', serif;
   --font-sans: 'Work Sans', ui-sans-serif, system-ui, sans-serif;
 }

@@ -18,7 +18,7 @@ La referencia visual aprobada es `cherry-studios-site/index.html`. **Se porta, n
   --cherry-2:#9E1613;   /* focus ring, cereza del riel */
   --blush:#FFBEC5;      /* CTA principal, acentos sobre oscuro */
   --cream:#FFF4EB;      /* texto sobre oscuro, superficie clara */
-  --paper:#FFFAF5;      /* fondo base */
+  --paper:#FFF4EB;      /* fondo base, mismo crudo de la paleta */
   --line-dark: rgba(255,244,235,0.18);
   --line-light: rgba(61,13,17,0.14);
   --shadow: 0 18px 40px rgba(61,13,17,0.22);

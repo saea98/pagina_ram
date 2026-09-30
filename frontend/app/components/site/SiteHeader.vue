@@ -5,6 +5,8 @@ defineProps<{ site?: Site | null }>()
 const open = ref(false)
 const scrolled = ref(false)
 const active = ref('')
+const route = useRoute()
+const solid = computed(() => route.path === '/aviso-de-privacidad')
 
 const links = [
   { href: '/#estudio', id: 'estudio', label: 'Estudio' },
@@ -43,7 +45,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <header class="nav" :class="{ scrolled }">
+  <header class="nav" :class="{ scrolled, solid }">
     <div class="nav-inner">
       <NuxtLink class="brand" to="/#inicio">
         <img src="/brand/logo-color.png" :alt="site?.brand.name || 'Cherry Studios'" />

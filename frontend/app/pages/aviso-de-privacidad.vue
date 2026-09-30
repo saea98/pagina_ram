@@ -14,6 +14,6 @@ usePageMeta({
 
 <template>
   <main class="surface-paper">
-    <article v-if="data" class="wrap page-hero prose" v-html="data.html" />
+    <article v-if="data" class="legal-doc prose" v-html="data.html" />
   </main>
 </template>

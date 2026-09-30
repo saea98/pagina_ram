@@ -49,6 +49,7 @@ export default defineNuxtConfig({
     head: {
       htmlAttrs: { lang: 'es-MX' },
       meta: [{ property: 'og:locale', content: 'es_MX' }],
+      link: [{ rel: 'icon', type: 'image/png', href: '/favicon.png' }],
     },
   },
   vite: {
