@@ -74,34 +74,49 @@ async function save() {
 <template>
   <div>
     <h1>Ajustes</h1>
-    <div class="admin-tabs">
+    <p class="admin-lede">Textos, fotos y datos de contacto del sitio.</p>
+    <div class="admin-tabs" role="tablist">
       <button
         v-for="[key, label] in tabs"
         v-show="key !== 'funciones' || user?.role === 'superadmin'"
         :key="key"
         type="button"
+        role="tab"
         :aria-selected="tab === key"
         @click="tab = key"
       >
         {{ label }}
       </button>
     </div>
-    <form @submit.prevent="save">
+    <form class="admin-panel" @submit.prevent="save">
       <section v-show="tab === 'marca'">
-        <label class="admin-field">Nombre <input v-model="settings.brand.name" /></label>
-        <label class="admin-field">Lema <input v-model="settings.brand.tagline" /></label>
+        <label class="admin-field">
+          <span>Nombre</span>
+          <input v-model="settings.brand.name" />
+        </label>
+        <label class="admin-field">
+          <span>Lema</span>
+          <input v-model="settings.brand.tagline" />
+        </label>
       </section>
       <section v-show="tab === 'portada'">
-        <label class="admin-field">Cita <textarea v-model="settings.hero.quote" rows="3" /></label>
-        <label class="admin-field"
-          >Título <textarea v-model="settings.hero.title_html" rows="3" />
+        <label class="admin-field">
+          <span>Cita</span>
+          <textarea v-model="settings.hero.quote" rows="3" />
         </label>
-        <label class="admin-field"
-          >Botón principal <input v-model="settings.hero.cta_primary_text"
-        /></label>
-        <label class="admin-field"
-          >Botón secundario <input v-model="settings.hero.cta_secondary_text"
-        /></label>
+        <label class="admin-field">
+          <span>Título</span>
+          <textarea v-model="settings.hero.title_html" rows="3" />
+        </label>
+        <p class="admin-hint">Para cursiva, rodea la palabra con &lt;em&gt; y &lt;/em&gt;.</p>
+        <label class="admin-field">
+          <span>Botón principal</span>
+          <input v-model="settings.hero.cta_primary_text" />
+        </label>
+        <label class="admin-field">
+          <span>Botón secundario</span>
+          <input v-model="settings.hero.cta_secondary_text" />
+        </label>
         <AdminMediaPicker
           v-model="settings.hero.image_media_id"
           accept="image"
@@ -110,14 +125,22 @@ async function save() {
         />
       </section>
       <section v-show="tab === 'estudio'">
-        <label class="admin-field">Etiqueta <input v-model="settings.studio.eyebrow" /></label>
-        <label class="admin-field">Título <input v-model="settings.studio.title" /></label>
-        <label class="admin-field"
-          >Texto <textarea v-model="settings.studio.body" rows="6" />
+        <label class="admin-field">
+          <span>Etiqueta</span>
+          <input v-model="settings.studio.eyebrow" />
         </label>
-        <label class="admin-field"
-          >Pie de foto <input v-model="settings.studio.image_caption"
-        /></label>
+        <label class="admin-field">
+          <span>Título</span>
+          <input v-model="settings.studio.title" />
+        </label>
+        <label class="admin-field">
+          <span>Texto</span>
+          <textarea v-model="settings.studio.body" rows="6" />
+        </label>
+        <label class="admin-field">
+          <span>Pie de foto</span>
+          <input v-model="settings.studio.image_caption" />
+        </label>
         <AdminMediaPicker
           v-model="settings.studio.image_media_id"
           accept="image"
@@ -125,69 +148,96 @@ async function save() {
         />
       </section>
       <section v-show="tab === 'secciones'">
-        <label class="admin-field"
-          >Equipo, etiqueta <input v-model="settings.team.eyebrow"
-        /></label>
-        <label class="admin-field">Equipo, título <input v-model="settings.team.title" /></label>
-        <label class="admin-field"
-          >Servicios, título <input v-model="settings.services.title"
-        /></label>
-        <label class="admin-field"
-          >Servicios, intro <textarea v-model="settings.services.lede" rows="3" />
+        <label class="admin-field">
+          <span>Equipo, etiqueta</span>
+          <input v-model="settings.team.eyebrow" />
         </label>
-        <label class="admin-field"
-          >Portafolio, título <input v-model="settings.portfolio.title"
-        /></label>
-        <label class="admin-field"
-          >Portafolio, nota <textarea v-model="settings.portfolio.note" rows="3" />
+        <label class="admin-field">
+          <span>Equipo, título</span>
+          <input v-model="settings.team.title" />
+        </label>
+        <label class="admin-field">
+          <span>Servicios, título</span>
+          <input v-model="settings.services.title" />
+        </label>
+        <label class="admin-field">
+          <span>Servicios, intro</span>
+          <textarea v-model="settings.services.lede" rows="3" />
+        </label>
+        <label class="admin-field">
+          <span>Portafolio, título</span>
+          <input v-model="settings.portfolio.title" />
+        </label>
+        <label class="admin-field">
+          <span>Portafolio, nota</span>
+          <textarea v-model="settings.portfolio.note" rows="3" />
         </label>
       </section>
       <section v-show="tab === 'contacto'">
-        <label class="admin-field"
-          >Correo público <input v-model="settings.contact.email" type="email"
-        /></label>
-        <label class="admin-field"
-          >WhatsApp <input v-model="settings.contact.whatsapp_e164" type="tel"
-        /></label>
-        <label class="admin-field"
-          >Mensaje de WhatsApp <textarea v-model="settings.contact.whatsapp_default_msg" rows="3" />
+        <label class="admin-field">
+          <span>Correo público</span>
+          <input v-model="settings.contact.email" type="email" />
         </label>
-        <label class="admin-field"
-          >Correos que reciben leads <textarea v-model="notify" rows="3" />
+        <label class="admin-field">
+          <span>WhatsApp</span>
+          <input v-model="settings.contact.whatsapp_e164" type="tel" />
         </label>
-        <label class="admin-field"
-          >Texto de consentimiento <textarea v-model="settings.contact.consent_text" rows="3" />
+        <label class="admin-field">
+          <span>Mensaje de WhatsApp</span>
+          <textarea v-model="settings.contact.whatsapp_default_msg" rows="3" />
         </label>
-        <label class="admin-field">Instagram <input v-model="settings.social.instagram" /></label>
+        <label class="admin-field">
+          <span>Correos que reciben leads</span>
+          <textarea v-model="notify" rows="3" />
+        </label>
+        <p class="admin-hint">Un correo por línea.</p>
+        <label class="admin-field">
+          <span>Texto de consentimiento</span>
+          <textarea v-model="settings.contact.consent_text" rows="3" />
+        </label>
+        <label class="admin-field">
+          <span>Instagram</span>
+          <input v-model="settings.social.instagram" />
+        </label>
       </section>
       <section v-show="tab === 'seo'">
-        <label class="admin-field"
-          >Título por defecto <input v-model="settings.seo.default_title"
-        /></label>
-        <label class="admin-field">Plantilla <input v-model="settings.seo.title_template" /></label>
-        <label class="admin-field"
-          >Descripción <textarea v-model="settings.seo.default_description" rows="3" />
+        <label class="admin-field">
+          <span>Título por defecto</span>
+          <input v-model="settings.seo.default_title" />
+        </label>
+        <label class="admin-field">
+          <span>Plantilla</span>
+          <input v-model="settings.seo.title_template" />
+        </label>
+        <label class="admin-field">
+          <span>Descripción</span>
+          <textarea v-model="settings.seo.default_description" rows="3" />
         </label>
       </section>
       <section v-show="tab === 'legal'">
         <AdminRichText v-model="settings.legal.privacy_html" />
-        <label class="admin-field"
-          >Fecha de actualización <input v-model="settings.legal.privacy_updated_at"
-        /></label>
+        <label class="admin-field">
+          <span>Fecha de actualización</span>
+          <input v-model="settings.legal.privacy_updated_at" />
+        </label>
       </section>
       <section v-show="tab === 'funciones' && user?.role === 'superadmin'">
-        <label class="admin-switch"
-          >Comparador A/B <input v-model="settings.features.ab_player" type="checkbox"
-        /></label>
-        <label class="admin-switch"
-          >Testimonios <input v-model="settings.features.testimonials" type="checkbox"
-        /></label>
-        <label class="admin-switch"
-          >Turnstile <input v-model="settings.features.turnstile" type="checkbox"
-        /></label>
-        <label class="admin-switch"
-          >WhatsApp flotante <input v-model="settings.features.whatsapp_float" type="checkbox"
-        /></label>
+        <label class="admin-switch">
+          Comparador A/B
+          <input v-model="settings.features.ab_player" type="checkbox" />
+        </label>
+        <label class="admin-switch">
+          Testimonios
+          <input v-model="settings.features.testimonials" type="checkbox" />
+        </label>
+        <label class="admin-switch">
+          Turnstile
+          <input v-model="settings.features.turnstile" type="checkbox" />
+        </label>
+        <label class="admin-switch">
+          WhatsApp flotante
+          <input v-model="settings.features.whatsapp_float" type="checkbox" />
+        </label>
       </section>
       <p v-if="error" class="admin-error">{{ error }}</p>
       <button class="admin-save" type="submit">Guardar</button>

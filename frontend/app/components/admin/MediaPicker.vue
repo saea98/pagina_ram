@@ -41,10 +41,35 @@ async function refreshCurrent() {
   current.value = await adminFetch<MediaItem>(`/admin/media/${model.value}`)
 }
 
+function onKey(event: KeyboardEvent) {
+  if (event.key === 'Escape') open.value = false
+}
+
 watch(open, (value) => {
-  if (value) void loadLibrary()
+  if (!import.meta.client) return
+  if (value) {
+    tab.value = 'upload'
+    error.value = ''
+    void loadLibrary()
+    window.addEventListener('keydown', onKey)
+    return
+  }
+  window.removeEventListener('keydown', onKey)
 })
+
+onUnmounted(() => {
+  if (import.meta.client) window.removeEventListener('keydown', onKey)
+})
+
 watch(model, () => void refreshCurrent(), { immediate: true })
+
+function takeFile(file: File | undefined) {
+  if (file) void upload(file)
+}
+
+function onDrop(event: DragEvent) {
+  takeFile(event.dataTransfer?.files?.[0])
+}
 
 function cropCenter(file: File, aspect: number): Promise<File> {
   return new Promise((resolve, reject) => {
@@ -162,52 +187,80 @@ function choose(item: MediaItem) {
 <template>
   <div class="admin-field">
     <span>{{ label }}</span>
-    <button class="admin-chip" type="button" @click="open = true">
-      {{ current ? current.original_filename : 'Elegir archivo' }}
+    <button class="admin-media-pick" type="button" @click="open = true">
+      <span>{{ current ? current.original_filename : 'Elegir archivo' }}</span>
+      <span v-if="current" class="admin-media-action">Cambiar</span>
     </button>
-    <img v-if="current?.preview_url && accept === 'image'" :src="current.preview_url" alt="" />
+    <img
+      v-if="current?.preview_url && accept === 'image'"
+      class="admin-media-preview"
+      :src="current.preview_url"
+      :alt="current.alt_text || ''"
+    />
     <p v-if="status" class="admin-hint">
       {{ status }} <span v-if="progress">{{ progress }}%</span>
     </p>
-    <div v-if="open" class="admin-drawer" role="dialog" aria-modal="true" :aria-label="label">
-      <div>
-        <div class="admin-tabs">
-          <button type="button" :aria-selected="tab === 'upload'" @click="tab = 'upload'">
-            Subir
-          </button>
-          <button type="button" :aria-selected="tab === 'library'" @click="tab = 'library'">
-            Biblioteca
-          </button>
+    <Teleport to="body">
+      <div v-if="open" class="admin-modal" role="dialog" aria-modal="true" :aria-label="label">
+        <button
+          class="admin-modal-backdrop"
+          type="button"
+          aria-label="Cerrar"
+          @click="open = false"
+        />
+        <div class="admin-modal-panel">
+          <div class="admin-modal-head">
+            <h2>{{ label }}</h2>
+            <button class="admin-chip" type="button" @click="open = false">Cerrar</button>
+          </div>
+          <div class="admin-tabs">
+            <button type="button" :aria-selected="tab === 'upload'" @click="tab = 'upload'">
+              Subir
+            </button>
+            <button type="button" :aria-selected="tab === 'library'" @click="tab = 'library'">
+              Biblioteca
+            </button>
+          </div>
+          <div v-if="tab === 'upload'">
+            <label v-if="accept === 'image'" class="admin-field">
+              <span>Texto alternativo</span>
+              <input v-model="alt" type="text" required />
+            </label>
+            <p v-if="aspect" class="admin-hint">
+              La recortamos al centro, proporción {{ aspect }}.
+            </p>
+            <div class="admin-drop" @dragover.prevent @drop.prevent="onDrop">
+              <p class="admin-hint">Suelta el archivo aquí o elige uno de tu equipo.</p>
+              <input
+                type="file"
+                :accept="accept === 'image' ? 'image/*' : 'audio/*'"
+                @change="takeFile(($event.target as HTMLInputElement).files?.[0])"
+              />
+              <div v-if="progress" class="admin-progress" aria-hidden="true">
+                <i :style="{ width: `${progress}%` }" />
+              </div>
+            </div>
+          </div>
+          <div v-else class="admin-library">
+            <p v-if="!library.length" class="admin-empty">Todavía no hay archivos aquí.</p>
+            <button
+              v-for="item in library"
+              :key="item.id"
+              class="admin-card"
+              type="button"
+              @click="choose(item)"
+            >
+              <img
+                v-if="item.preview_url && accept === 'image'"
+                :src="item.preview_url"
+                :alt="item.alt_text || ''"
+              />
+              <strong>{{ item.original_filename }}</strong>
+            </button>
+          </div>
+          <p v-if="error" class="admin-error">{{ error }}</p>
         </div>
-        <div v-if="tab === 'upload'" class="admin-field">
-          <label v-if="accept === 'image'">
-            Texto alternativo
-            <input v-model="alt" type="text" required />
-          </label>
-          <p v-if="aspect" class="admin-hint">
-            Recorte sugerido al centro, proporción {{ aspect }}.
-          </p>
-          <input
-            type="file"
-            :accept="accept === 'image' ? 'image/*' : 'audio/*'"
-            @change="upload(($event.target as HTMLInputElement).files?.[0] as File)"
-          />
-        </div>
-        <div v-else>
-          <button
-            v-for="item in library"
-            :key="item.id"
-            class="admin-card"
-            type="button"
-            @click="choose(item)"
-          >
-            <strong>{{ item.original_filename }}</strong>
-          </button>
-        </div>
-        <p v-if="error" class="admin-error">{{ error }}</p>
-        <button class="admin-chip" type="button" @click="open = false">Cerrar</button>
       </div>
-      <button class="admin-backdrop" type="button" aria-label="Cerrar" @click="open = false" />
-    </div>
+    </Teleport>
   </div>
 </template>

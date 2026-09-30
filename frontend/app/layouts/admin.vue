@@ -64,6 +64,7 @@ async function logout() {
   <div class="admin-shell">
     <div v-if="open" class="admin-drawer">
       <nav>
+        <p class="admin-mark">Cherry Studios</p>
         <NuxtLink v-for="[to, label] in links" :key="to" :to="to" @click="open = false">
           {{ label }}
           <span v-if="to === '/admin/leads' && newLeads" class="admin-badge">{{ newLeads }}</span>
@@ -77,6 +78,7 @@ async function logout() {
     </div>
     <aside class="admin-nav">
       <nav>
+        <p class="admin-mark">Cherry Studios</p>
         <NuxtLink v-for="[to, label] in links" :key="`desk-${to}`" :to="to">
           {{ label }}
           <span v-if="to === '/admin/leads' && newLeads" class="admin-badge">{{ newLeads }}</span>
@@ -85,7 +87,7 @@ async function logout() {
         <button class="linkish" type="button" @click="logout">Cerrar sesión</button>
       </nav>
     </aside>
-    <div>
+    <div class="admin-content">
       <header class="admin-top">
         <button class="admin-menu" type="button" @click="open = true">Menú</button>
         <p class="admin-brand">{{ here }}</p>
