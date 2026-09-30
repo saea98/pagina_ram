@@ -26,7 +26,7 @@ RUN uv sync --frozen --no-install-project
 COPY . .
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/ready')"
 CMD ["uvicorn", "app.main:app", "--reload", "--reload-dir", "app", "--host", "0.0.0.0", "--proxy-headers", "--forwarded-allow-ips=*"]
 
 FROM base AS runtime
@@ -38,5 +38,5 @@ RUN chown -R app:app /app
 USER app
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/ready')"
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers", "--forwarded-allow-ips=*", "--workers", "2"]

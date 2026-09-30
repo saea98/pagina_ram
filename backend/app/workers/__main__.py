@@ -1,20 +1,23 @@
 """Keep the worker process alive until the job loop lands in T-06."""
 
-import logging
 import signal
 import time
 
-log = logging.getLogger("cherry.worker")
+import structlog
+
+from app.core.logging import configure_logging
+
+log = structlog.get_logger()
 
 
 def main() -> None:
-    logging.basicConfig(level=logging.INFO, format="%(message)s")
+    configure_logging()
     stop = False
 
     def handle(signum: int, _frame: object) -> None:
         nonlocal stop
         stop = True
-        log.info("worker_stopping signal=%s", signum)
+        log.info("worker_stopping", signal=signum)
 
     signal.signal(signal.SIGTERM, handle)
     signal.signal(signal.SIGINT, handle)

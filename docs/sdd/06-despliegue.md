@@ -43,10 +43,10 @@ INTERNAL_REVALIDATE_TOKEN=otro-valor-aleatorio
 SEED_ADMIN_EMAIL=
 SEED_ADMIN_PASSWORD=
 
-# Correo (SMTP)
-SMTP_HOST=smtp-relay.brevo.com
+# Correo (SMTP de Google Workspace; ver 07-preguntas-abiertas.md)
+SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=
+SMTP_USER=no-reply@cherrystudios.com.mx
 SMTP_PASSWORD=
 SMTP_FROM="Cherry Studios <no-reply@cherrystudios.com.mx>"
 

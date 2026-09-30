@@ -13,7 +13,7 @@ flowchart LR
   W -->|fetch interno http://api:8000| A
   A --> D[(PostgreSQL 17)]
   A --> M
-  A -->|SMTP| E[Proveedor de correo<br/>Brevo / Resend / SES]
+  A -->|SMTP| E[Google Workspace<br/>smtp.gmail.com]
   A -->|cola ligera| Wk[worker<br/>procesamiento audio/imagen]
   Wk --> M
   Wk --> D
@@ -46,7 +46,7 @@ flowchart LR
 | Cola | **Tabla `jobs` en Postgres + worker con `SELECT … FOR UPDATE SKIP LOCKED`** | Cero infraestructura extra para volumen bajo. | Redis + Celery/RQ: más piezas que operar (se puede migrar después). |
 | Procesamiento medios | **ffmpeg** (transcodificar, LUFS con `ebur128`), **audiowaveform** o numpy para peaks, **Pillow** para imágenes WebP/AVIF | Estándar, corre en el contenedor. | Servicios externos de pago. |
 | Almacenamiento | **Volumen Docker `media`** servido por Caddy en `/media` | Simple; respaldable con tar/restic. Interfaz `StorageBackend` para cambiar a S3/R2 sin tocar lógica. | S3 desde día 1: costo/complejidad innecesarios. |
-| Correo | **SMTP** (Brevo/Resend/SES) vía `aiosmtplib` | Proveedor intercambiable por env vars. | Netlify Forms: lo dejamos al salir de Netlify. |
+| Correo | **SMTP de Google Workspace** (`smtp.gmail.com:587`) vía `aiosmtplib` | El dominio ya está en Workspace. En local, Mailpit. | Netlify Forms: lo dejamos al salir de Netlify. |
 | Anti‑spam | Honeypot + `slowapi` rate limit + **Cloudflare Turnstile** opcional | Sin fricción para usuarios reales. | reCAPTCHA: cookies de Google, peor UX. |
 | Proxy/TLS | **Caddy 2** | HTTPS automático (Let’s Encrypt), config mínima, sirve `/media`. | Nginx + certbot: más pasos. |
 | Analítica (F2) | **Umami** autoalojado | Sin cookies, respeta privacidad, mismo Postgres. | Google Analytics: requiere banner de cookies. |
