@@ -1,0 +1,14 @@
+---
+description: Flujo Spec-Driven Development y skills del proyecto Cherry Studios
+alwaysApply: true
+---
+
+Este repo se construye con Spec-Driven Development. Antes de escribir código:
+
+1. Lee @AGENTS.md y @docs/skills/sdd-workflow/SKILL.md.
+2. Toma la tarea indicada por el usuario o la siguiente sin marcar en @docs/sdd/05-plan-tareas.md.
+3. Lee los RF citados en @docs/sdd/01-especificacion.md y las secciones relevantes de @docs/sdd/02-arquitectura.md, @docs/sdd/03-modelo-datos.md y @docs/sdd/04-api.md.
+4. Carga el skill del área en docs/skills/<skill>/SKILL.md (cherry-brand-ui, nuxt-frontend, fastapi-backend, admin-cms, docker-deploy, seo-performance).
+5. Cumple la Definición de Terminado de @docs/sdd/00-constitucion.md y marca la casilla de la tarea al terminar.
+
+La referencia visual aprobada es cherry-studios-site/index.html: conserva paleta, tipografías, tono y microinteracciones.

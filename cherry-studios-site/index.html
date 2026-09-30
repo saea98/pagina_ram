@@ -1,0 +1,965 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8" /><title>Cherry Studios</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Work+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --ink:#1C1B1B;
+    --maroon:#3D0D11;
+    --maroon-2:#54141A;
+    --cherry:#7E0F0D;
+    --cherry-2:#9E1613;
+    --blush:#FFBEC5;
+    --cream:#FFF4EB;
+    --paper:#FFFAF5;
+    --on-dark: var(--cream);
+    --line-dark: rgba(255,244,235,0.18);
+    --line-light: rgba(61,13,17,0.14);
+    --shadow: 0 18px 40px rgba(61,13,17,0.22);
+    --maxw: 1180px;
+    --nav-h: 92px;
+  }
+  *,*::before,*::after{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} }
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Work Sans", ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  img{max-width:100%;display:block;}
+  a{color:inherit;}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding-left:clamp(20px,5vw,56px); padding-right:clamp(20px,5vw,56px);}
+  h1,h2,h3{font-family:"Fraunces", serif; text-wrap:balance; margin:0;}
+  .eyebrow{
+    font-size:0.76rem; letter-spacing:0.16em; text-transform:uppercase; font-weight:700;
+    margin:0 0 14px;
+  }
+  button{font:inherit; cursor:pointer;}
+  :focus-visible{outline:2px solid var(--cherry-2); outline-offset:3px;}
+
+  /* ---------- scroll progress rail ---------- */
+  .rail{
+    position:fixed; left:26px; top:var(--nav-h); bottom:0; width:20px;
+    display:none; z-index:40; pointer-events:none;
+  }
+  @media(min-width:980px){ .rail{ display:block; } }
+  .rail-track{
+    position:absolute; left:9px; top:24px; bottom:80px; width:2px;
+    background:rgba(61,13,17,0.16); border-radius:2px;
+  }
+  .rail-fill{
+    position:absolute; left:9px; top:24px; width:2px; height:calc(100% - 104px);
+    background:linear-gradient(var(--cherry-2), var(--cherry));
+    border-radius:2px; transform:scaleY(0); transform-origin:top;
+  }
+  .rail-dot{
+    position:absolute; left:0px; top:24px; width:20px; height:20px;
+    transform:translateY(-50%);
+    filter:drop-shadow(0 0 4px rgba(126,15,13,0.35));
+  }
+
+  /* ---------- nav ---------- */
+  header.nav{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    height:var(--nav-h);
+    display:flex; align-items:center;
+    background:rgba(61,13,17,0.86);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border-bottom:1px solid transparent;
+    transition:border-color .3s ease, background .3s ease;
+  }
+  header.nav.scrolled{ border-bottom-color:var(--line-dark); background:rgba(61,13,17,0.96); }
+  .nav-inner{
+    width:100%; max-width:var(--maxw); margin:0 auto;
+    padding:0 clamp(20px,5vw,56px);
+    display:flex; align-items:center; gap:22px;
+  }
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--cream); flex:none;}
+  .brand img{height:52px; width:auto; display:block; filter:drop-shadow(0 2px 5px rgba(0,0,0,0.35));}
+  nav.links{display:none; gap:8px; margin-left:auto; margin-right:10px;}
+  @media(min-width:840px){ nav.links{ display:flex; } }
+  nav.links a{
+    position:relative; text-decoration:none; color:var(--blush);
+    font-size:1.04rem; font-weight:600; padding:10px 17px; border-radius:999px;
+    transition:color .2s ease;
+  }
+  nav.links a::after{
+    content:""; position:absolute; left:17px; right:17px; bottom:6px; height:2px;
+    background:var(--cream); transform:scaleX(0); transform-origin:left; transition:transform .25s ease;
+  }
+  nav.links a:hover{ color:var(--cream); }
+  nav.links a.active{ color:var(--cream); }
+  nav.links a.active::after{ transform:scaleX(1); }
+  .nav-cta{
+    flex:none; text-decoration:none; background:var(--blush); color:var(--maroon);
+    font-weight:700; font-size:1rem; padding:13px 26px; border-radius:999px;
+    transition:transform .2s ease, background .2s ease;
+  }
+  .nav-cta:hover{ background:var(--cream); transform:translateY(-1px); }
+  .nav-burger{
+    display:flex; margin-left:auto; background:none; border:none; color:var(--cream);
+    width:48px; height:48px; align-items:center; justify-content:center; border-radius:10px;
+  }
+  @media(min-width:840px){ .nav-burger{ display:none; } }
+  .nav-burger svg{width:26px; height:26px;}
+  .mobile-menu{
+    position:fixed; inset:var(--nav-h) 0 0 0; background:var(--maroon); z-index:49;
+    display:flex; flex-direction:column; padding:28px clamp(20px,6vw,40px);
+    gap:6px; transform:translateY(-8px); opacity:0; pointer-events:none;
+    transition:opacity .22s ease, transform .22s ease;
+  }
+  .mobile-menu.open{ opacity:1; transform:translateY(0); pointer-events:auto; }
+  .mobile-menu a{
+    text-decoration:none; color:var(--cream); font-family:"Fraunces", serif; font-size:1.6rem;
+    padding:14px 4px; border-bottom:1px solid var(--line-dark);
+  }
+
+  /* ---------- section shell ---------- */
+  section{ position:relative; }
+  .section-pad{ padding:120px 0 108px; }
+  .surface-maroon{ background:var(--maroon); color:var(--cream); }
+  .surface-cream{ background:var(--cream); color:var(--ink); }
+  .surface-blush{ background:var(--blush); color:var(--maroon); }
+  .surface-paper{ background:var(--paper); color:var(--ink); }
+
+  .reveal{ opacity:0; transform:translateY(28px); transition:opacity .7s ease, transform .7s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+  @media (prefers-reduced-motion: reduce){ .reveal{ opacity:1; transform:none; transition:none; } }
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:100svh; display:flex; align-items:flex-end; position:relative;
+    background:#0e0405;
+    overflow:hidden;
+  }
+  .hero-photo{
+    position:absolute; inset:0; background-image:var(--hero-img);
+    background-size:cover; background-position:60% 30%;
+    will-change:transform;
+  }
+  .hero-veil{
+    position:absolute; inset:0;
+    background:
+      linear-gradient(180deg, rgba(20,4,5,0.55) 0%, rgba(38,7,8,0.35) 32%, rgba(61,13,17,0.55) 68%, rgba(20,4,5,0.94) 100%),
+      linear-gradient(90deg, rgba(20,4,5,0.55) 0%, rgba(20,4,5,0.05) 45%);
+  }
+  .hero-inner{ position:relative; width:100%; padding-bottom:88px; padding-top:calc(var(--nav-h) + 64px); color:var(--cream); }
+  .hero-quote{
+    font-family:"Fraunces", serif; font-style:italic; font-weight:500;
+    font-size:clamp(0.95rem, 1.6vw, 1.15rem); color:var(--blush);
+    margin:0 0 22px; letter-spacing:0.01em;
+  }
+  .hero-quote::before{ content:"“"; } .hero-quote::after{ content:"”"; }
+  h1.hero-h1{
+    font-weight:600; line-height:0.98; letter-spacing:-0.01em;
+    font-size:clamp(2.6rem, 7.4vw, 5.6rem);
+    max-width:16ch;
+  }
+  h1.hero-h1 em{
+    font-style:italic; font-weight:500; color:var(--blush);
+  }
+  h1.hero-h1 .word{ display:inline-block; opacity:0; transform:translateY(0.5em); animation:wordIn .8s cubic-bezier(.2,.7,.2,1) forwards; }
+  @media (prefers-reduced-motion: reduce){ h1.hero-h1 .word{ opacity:1; transform:none; animation:none; } }
+  @keyframes wordIn{ to{ opacity:1; transform:translateY(0);} }
+  .hero-cta-row{ display:flex; flex-wrap:wrap; gap:14px; margin-top:38px; }
+  .btn{
+    display:inline-flex; align-items:center; gap:10px; text-decoration:none;
+    font-weight:700; font-size:0.95rem; padding:15px 28px; border-radius:999px;
+    border:1px solid transparent; transition:transform .2s ease, background .2s ease, color .2s ease, border-color .2s ease;
+  }
+  .btn:hover{ transform:translateY(-2px); }
+  .btn-solid{ background:var(--blush); color:var(--maroon); }
+  .btn-solid:hover{ background:var(--cream); }
+  .btn-ghost{ color:var(--cream); border-color:rgba(255,244,235,0.55); }
+  .btn-ghost:hover{ border-color:var(--cream); background:rgba(255,244,235,0.08); }
+  .btn-dark{ background:var(--maroon); color:var(--cream); }
+  .btn-dark:hover{ background:var(--ink); }
+
+  .scroll-cue{
+    position:absolute; right:clamp(20px,5vw,56px); bottom:34px; color:var(--blush);
+    display:flex; flex-direction:column; align-items:center; gap:10px; font-size:0.72rem;
+    letter-spacing:0.14em; text-transform:uppercase; opacity:0.85;
+  }
+  .scroll-cue .line{ width:1px; height:46px; background:linear-gradient(var(--blush), transparent); position:relative; overflow:hidden; }
+  .scroll-cue .line::after{
+    content:""; position:absolute; left:0; top:-46px; width:100%; height:46px; background:var(--cream);
+    animation:cueDrop 1.8s ease-in-out infinite;
+  }
+  @keyframes cueDrop{ 0%{ top:-46px; } 60%{ top:46px; } 100%{ top:46px; } }
+  @media (prefers-reduced-motion: reduce){ .scroll-cue .line::after{ animation:none; top:0; } }
+
+  /* ---------- estudio ---------- */
+  .split{ display:grid; grid-template-columns:1fr; gap:52px; align-items:center; }
+  @media(min-width:880px){ .split{ grid-template-columns:1.05fr 0.95fr; gap:72px; } }
+  .split.rev{ direction:rtl; } .split.rev > *{ direction:ltr; }
+  .frame{ position:relative; border-radius:20px; overflow:hidden; box-shadow:var(--shadow); }
+  .frame img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .frame::after{ content:""; position:absolute; inset:0; box-shadow:inset 0 0 0 1px rgba(61,13,17,0.10); border-radius:20px; }
+  .frame-tag{
+    position:absolute; left:18px; bottom:18px; background:rgba(28,27,27,0.72); color:var(--cream);
+    font-size:0.74rem; letter-spacing:0.08em; text-transform:uppercase; padding:8px 14px; border-radius:999px;
+    backdrop-filter:blur(4px);
+  }
+  h2.h-lg{ font-weight:600; font-size:clamp(2rem, 4vw, 3.1rem); line-height:1.04; margin-bottom:22px; }
+  p.lede{ font-size:1.08rem; line-height:1.75; max-width:52ch; }
+  .surface-cream .eyebrow{ color:var(--cherry); } .surface-cream p.lede{ color:#3a2a2b; }
+
+  /* ---------- founders ---------- */
+  .founders{ display:grid; grid-template-columns:1fr; gap:34px; margin-top:56px; }
+  @media(min-width:720px){ .founders{ grid-template-columns:1fr 1fr; gap:40px; } }
+  .founder{
+    background:var(--cream); border-radius:22px; padding:30px; display:flex; gap:22px;
+    box-shadow:0 14px 30px rgba(61,13,17,0.14); align-items:flex-start;
+  }
+  .founder img{ width:96px; height:96px; border-radius:50%; object-fit:cover; flex:none; box-shadow:0 0 0 4px var(--paper); }
+  .founder h3{ font-size:1.28rem; font-weight:600; color:var(--maroon); margin:2px 0 4px; }
+  .founder .role{ font-size:0.78rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--cherry); font-weight:700; margin-bottom:10px; }
+  .founder p{ font-size:0.94rem; line-height:1.65; color:#3a2020; margin:0; }
+
+  /* ---------- servicios ---------- */
+  .svc-head{ display:flex; flex-direction:column; align-items:center; text-align:center; margin-bottom:54px; }
+  .svc-head p.lede{ text-align:center; margin:0 auto; }
+  .svc-hint{ margin-top:10px; font-size:0.84rem; color:var(--cherry); font-weight:600; }
+  .svc-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:20px;
+  }
+  .svc-card{
+    all:unset; cursor:pointer; perspective:1400px; height:230px; border-radius:20px;
+  }
+  .svc-inner{
+    position:relative; width:100%; height:100%; border-radius:20px; text-align:left;
+    transition:transform .6s cubic-bezier(.2,.7,.2,1); transform-style:preserve-3d;
+  }
+  .svc-card[aria-pressed="true"] .svc-inner{ transform:rotateY(180deg); }
+  .svc-face{
+    position:absolute; inset:0; border-radius:20px; padding:26px;
+    backface-visibility:hidden; display:flex; flex-direction:column;
+  }
+  .svc-front{ background:var(--maroon); color:var(--cream); justify-content:space-between; }
+  .svc-front .num{ font-size:0.75rem; letter-spacing:0.12em; color:var(--blush); font-weight:700; }
+  .svc-front .ico{ width:38px; height:38px; margin:8px 0 14px; color:var(--blush); }
+  .svc-front h3{ font-size:1.22rem; font-weight:600; }
+  .svc-front .tap{ font-size:0.74rem; color:rgba(255,244,235,0.6); margin-top:12px; }
+  .svc-back{ background:var(--cherry); color:var(--cream); transform:rotateY(180deg); justify-content:center; }
+  .svc-back h3{ font-size:1.02rem; font-weight:600; margin-bottom:8px; }
+  .svc-back p{ font-size:0.92rem; line-height:1.55; margin:0; color:var(--cream); }
+  @media(hover:hover){
+    .svc-card:hover .svc-inner{ transform:translateY(-4px); }
+    .svc-card[aria-pressed="true"]:hover .svc-inner{ transform:rotateY(180deg) translateY(-4px); }
+  }
+
+  /* ---------- portafolio ---------- */
+  .surface-maroon .eyebrow{ color:var(--blush); }
+  .embeds{ display:flex; flex-direction:column; gap:20px; margin-top:20px; }
+  .embed-card{
+    background:rgba(255,244,235,0.05); border:1px solid var(--line-dark); border-radius:18px;
+    padding:20px 22px 22px;
+  }
+  .embed-label{ display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 12px; margin-bottom:14px; }
+  .embed-title{ font-family:"Fraunces", serif; font-weight:600; font-size:1.14rem; color:var(--cream); }
+  .embed-artist{ font-size:0.86rem; color:var(--blush); }
+  .embed-frame{ display:block; width:100%; border-radius:12px; overflow:hidden; }
+  .youtube-wrap{ position:relative; width:100%; padding-top:56.25%; border-radius:12px; overflow:hidden; background:#0e0405; }
+  .youtube-wrap iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+  .listen-row{ display:flex; flex-wrap:wrap; gap:12px; }
+  .listen-row .btn{ font-size:0.9rem; padding:13px 24px; }
+  .listen-row .btn svg{ width:18px; height:18px; }
+  .portfolio-note{ margin-top:26px; font-size:0.82rem; color:rgba(255,244,235,0.55); max-width:60ch; }
+
+  /* ---------- contacto ---------- */
+  .contact-grid{ display:grid; grid-template-columns:1fr; gap:48px; }
+  @media(min-width:900px){ .contact-grid{ grid-template-columns:1fr 1fr; } }
+  form.reach{ display:flex; flex-direction:column; gap:14px; }
+  .field{ display:flex; flex-direction:column; gap:6px; }
+  .field label{ font-size:0.78rem; letter-spacing:0.06em; text-transform:uppercase; font-weight:700; color:var(--maroon); }
+  .field input, .field select, .field textarea{
+    font:inherit; padding:14px 16px; border-radius:12px; border:1.5px solid rgba(61,13,17,0.25);
+    background:var(--paper); color:var(--ink);
+  }
+  .field textarea{ resize:vertical; min-height:96px; }
+  .field input:focus, .field select:focus, .field textarea:focus{ outline:none; border-color:var(--cherry); }
+  .reach .submit{ margin-top:6px; align-self:flex-start; }
+  .direct-card{
+    background:var(--maroon); color:var(--cream); border-radius:22px; padding:36px;
+    display:flex; flex-direction:column; gap:22px; justify-content:center;
+  }
+  .direct-row{ display:flex; align-items:center; gap:16px; text-decoration:none; color:var(--cream); }
+  .direct-row .ic{ width:46px; height:46px; border-radius:50%; background:rgba(255,244,235,0.12); display:flex; align-items:center; justify-content:center; flex:none; }
+  .direct-row .ic svg{ width:20px; height:20px; }
+  .direct-row .lbl{ font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--blush); }
+  .direct-row .val{ font-family:"Fraunces", serif; font-size:1.15rem; }
+  .direct-row:hover .val{ text-decoration:underline; }
+
+  /* ---------- footer ---------- */
+  footer.site-foot{
+    background:var(--ink); color:rgba(255,244,235,0.7); padding:34px clamp(20px,5vw,56px) 90px;
+    display:flex; flex-wrap:wrap; gap:14px; align-items:center; justify-content:space-between;
+    font-size:0.84rem;
+  }
+  footer.site-foot .brand-mini{ display:flex; align-items:center; color:var(--cream); }
+  footer.site-foot .brand-mini img{ height:36px; width:auto; }
+  footer.site-foot a{ text-decoration:none; color:inherit; }
+  footer.site-foot a:hover{ color:var(--cream); }
+
+  /* floating privacy pill */
+  .privacy-pill{
+    position:fixed; left:16px; bottom:16px; z-index:60; text-decoration:none;
+    background:rgba(28,27,27,0.88); color:rgba(255,244,235,0.85); font-size:0.72rem; font-weight:600;
+    padding:9px 16px; border-radius:999px; border:1px solid rgba(255,244,235,0.18);
+    backdrop-filter:blur(6px); transition:background .2s ease, color .2s ease;
+  }
+  .privacy-pill:hover{ background:var(--ink); color:var(--cream); }
+</style>
+
+<style>
+  #splashScreen{
+    position:fixed; inset:0; z-index:9999;
+    background:var(--maroon);
+    display:flex; align-items:center; justify-content:center;
+    opacity:1; transition:opacity .45s ease;
+  }
+  #splashScreen.splash-hide{ opacity:0; pointer-events:none; }
+  #splashLogoWrap{
+    display:flex; align-items:center; gap:16px;
+    transform-origin:center center;
+    transition:transform .7s cubic-bezier(.65,0,.35,1);
+    will-change:transform;
+  }
+  #splashLogoWrap img{
+    height:190px; width:auto; flex:none;
+    filter:drop-shadow(0 4px 14px rgba(0,0,0,0.4));
+  }
+  @media (max-width:560px){
+    #splashLogoWrap img{ height:110px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    #splashScreen{ transition:none; }
+    #splashLogoWrap{ transition:none; }
+  }
+</style>
+</head><body><div id="splashScreen" aria-hidden="true">
+  <div id="splashLogoWrap">
+    <img src="images/logo-fused-color-noborde.png" alt="Cherry Studios" />
+  </div>
+</div>
+
+<div class="rail" aria-hidden="true">
+  <div class="rail-track"></div>
+  <div class="rail-fill" id="railFill"></div>
+  <div class="rail-dot" id="railDot">
+    <svg viewBox="0 0 32 32" width="100%" height="100%" aria-hidden="true">
+      <path d="M16 3c-2.6 2.6-4.4 5.4-5.4 8.6" fill="none" stroke="var(--maroon)" stroke-width="2.1" stroke-linecap="round"/>
+      <path d="M16 3c2.6 2.2 4.6 4.6 5.8 7.4" fill="none" stroke="var(--maroon)" stroke-width="2.1" stroke-linecap="round"/>
+      <circle cx="9.5" cy="20.5" r="7.6" fill="var(--cherry-2)"/>
+      <circle cx="22" cy="19" r="7.6" fill="var(--cherry-2)"/>
+      <circle cx="7" cy="18" r="1.7" fill="rgba(255,244,235,0.55)"/>
+      <circle cx="19.5" cy="16.5" r="1.7" fill="rgba(255,244,235,0.55)"/>
+    </svg>
+  </div>
+</div>
+
+<header class="nav" id="siteNav">
+  <div class="nav-inner">
+    <a class="brand" href="#inicio">
+      <img src="images/logo-fused-color-noborde.png" alt="Cherry Studios" />
+    </a>
+    <nav class="links" id="navLinks">
+      <a href="#estudio" data-sec="estudio">Estudio</a>
+      <a href="#equipo" data-sec="equipo">Equipo</a>
+      <a href="#servicios" data-sec="servicios">Servicios</a>
+      <a href="#portafolio" data-sec="portafolio">Portafolio</a>
+    </nav>
+    <a class="nav-cta" href="#contacto">Contacto</a>
+    <button class="nav-burger" id="burgerBtn" aria-label="Abrir menú" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#estudio">Estudio</a>
+  <a href="#equipo">Equipo</a>
+  <a href="#servicios">Servicios</a>
+  <a href="#portafolio">Portafolio</a>
+  <a href="#contacto">Contacto</a>
+</div>
+
+<main>
+
+  <section class="hero" id="inicio" style="--hero-img:url('images/hero.jpg')">
+    <div class="hero-photo"></div>
+    <div class="hero-veil"></div>
+    <div class="wrap hero-inner">
+      <p class="hero-quote">Que la emoción te lleve a donde la mente no puede</p>
+      <h1 class="hero-h1" id="heroH1">
+        <span class="word" style="animation-delay:.05s">Tu</span>
+        <span class="word" style="animation-delay:.12s">música,</span>
+        <span class="word" style="animation-delay:.19s">tu</span>
+        <span class="word" style="animation-delay:.26s">proceso</span>
+        <span class="word" style="animation-delay:.33s">y</span>
+        <br/>
+        <span class="word" style="animation-delay:.42s"><em>nuestra</em></span>
+        <span class="word" style="animation-delay:.5s"><em>cereza.</em></span>
+      </h1>
+      <div class="hero-cta-row">
+        <a class="btn btn-solid" href="#servicios">Ver servicios</a>
+        <a class="btn btn-ghost" href="#contacto">Cuéntanos tu proyecto →</a>
+      </div>
+    </div>
+    <div class="scroll-cue" aria-hidden="true"><span>Scroll</span><span class="line"></span></div>
+  </section>
+
+  <section class="surface-cream section-pad" id="estudio">
+    <div class="wrap">
+      <div class="split reveal">
+        <div>
+          <div class="frame">
+            <img src="images/estudio.jpg" alt="Chemita y Ramzy trabajando en la mesa de producción de Cherry Studios, monitores e interfaz encendidos." />
+            <span class="frame-tag">Sesión en estudio</span>
+          </div>
+        </div>
+        <div>
+          <p class="eyebrow">El estudio</p>
+          <h2 class="h-lg">Cada canción parte de<br/>una emoción real.</h2>
+          <p class="lede">Bajo esa premisa trabajan Chemita y Ramzy: en Cherry Studios el objetivo no es solo un sonido impecable, es una producción que comunique lo que tu música realmente quiere decir. Por eso combinamos criterio técnico con una escucha cercana a cada artista, cuidando el detalle sin perder de vista la idea original detrás de cada tema.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="surface-blush section-pad" id="equipo">
+    <div class="wrap">
+      <div class="reveal" style="max-width:640px;">
+        <p class="eyebrow" style="color:var(--cherry);">¿Quiénes somos?</p>
+        <h2 class="h-lg">Dos maneras de<br/>escuchar la misma canción.</h2>
+      </div>
+      <div class="founders">
+        <div class="founder reveal">
+          <img src="images/founder-1.jpg" alt="Retrato de Alejandro Vega, “Chemita”" />
+          <div>
+            <h3>Alejandro Vega — “Chemita”</h3>
+            <p class="role">Producción vocal · Mezcla · Mastering</p>
+            <p>Se especializa en producción vocal, mezcla y mastering. Busca que cada canción transmita la emoción, intención y claridad que el artista se imaginó desde un inicio.</p>
+          </div>
+        </div>
+        <div class="founder reveal">
+          <img src="images/founder-2.jpg" alt="Retrato de Ramsés Jiménez Acosta, “Ramzy”" />
+          <div>
+            <h3>Ramsés Jiménez — “Ramzy”</h3>
+            <p class="role">Ingeniería de audio · Producción</p>
+            <p>Se especializa en mezcla, composición y mastering, buscando que cada canción encuentre su propia identidad. Su enfoque combina creatividad y técnica para lograr un sonido sólido, cuidado y fiel a la visión del artista.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="surface-cream section-pad" id="servicios">
+    <div class="wrap">
+      <div class="svc-head reveal">
+        <p class="eyebrow">Servicios</p>
+        <h2 class="h-lg">De la idea al máster.</h2>
+        <p class="lede">Ocho formas de trabajar tu proyecto, del primer boceto a la entrega final.</p>
+        <p class="svc-hint">Toca una tarjeta para ver el detalle</p>
+      </div>
+      <div class="svc-grid reveal">
+
+        <button class="svc-card" aria-pressed="false" data-idx="1">
+          <div class="svc-inner">
+            <div class="svc-face svc-front">
+              <span class="num">01</span>
+              <svg class="ico" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 27a4 4 0 1 1-4-4V9l16-3v17"/><path d="M26 23a4 4 0 1 1-4-4"/></svg>
+              <h3>Composición</h3>
+              <span class="tap">Ver detalle →</span>
+            </div>
+            <div class="svc-face svc-back">
+              <h3>Composición</h3>
+              <p>Desarrollo de idea, letra, estructura y arreglos desde cero — solo o junto a Chemita y Ramzy.</p>
+            </div>
+          </div>
+        </button>
+
+        <button class="svc-card" aria-pressed="false" data-idx="2">
+          <div class="svc-inner">
+            <div class="svc-face svc-front">
+              <span class="num">02</span>
+              <svg class="ico" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="15" y="6" width="10" height="17" rx="5"/><path d="M10 19a10 10 0 0 0 20 0"/><line x1="20" y1="29" x2="20" y2="35"/><line x1="14" y1="35" x2="26" y2="35"/></svg>
+              <h3>Grabación</h3>
+              <span class="tap">Ver detalle →</span>
+            </div>
+            <div class="svc-face svc-back">
+              <h3>Grabación</h3>
+              <p>Tracking, comping y entrega de sesión, stems o multitrack, con acompañamiento en cabina.</p>
+            </div>
+          </div>
+        </button>
+
+        <button class="svc-card" aria-pressed="false" data-idx="3">
+          <div class="svc-inner">
+            <div class="svc-face svc-front">
+              <span class="num">03</span>
+              <svg class="ico" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6"><line x1="10" y1="8" x2="10" y2="32"/><circle cx="10" cy="16" r="3"/><line x1="20" y1="8" x2="20" y2="32"/><circle cx="20" cy="24" r="3"/><line x1="30" y1="8" x2="30" y2="32"/><circle cx="30" cy="12" r="3"/></svg>
+              <h3>Mezcla</h3>
+              <span class="tap">Ver detalle →</span>
+            </div>
+            <div class="svc-face svc-back">
+              <h3>Mezcla</h3>
+              <p>Balance, espacio y textura en estéreo para que cada elemento de tu canción tenga su lugar.</p>
+            </div>
+          </div>
+        </button>
+
+        <button class="svc-card" aria-pressed="false" data-idx="4">
+          <div class="svc-inner">
+            <div class="svc-face svc-front">
+              <span class="num">04</span>
+              <svg class="ico" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="20" cy="20" r="13"/><circle cx="20" cy="20" r="5"/><circle cx="20" cy="20" r="1.4" fill="currentColor" stroke="none"/></svg>
+              <h3>Máster</h3>
+              <span class="tap">Ver detalle →</span>
+            </div>
+            <div class="svc-face svc-back">
+              <h3>Máster</h3>
+              <p>El acabado final: loudness, translación entre bocinas y consistencia entre plataformas.</p>
+            </div>
+          </div>
+        </button>
+
+        <button class="svc-card" aria-pressed="false" data-idx="5">
+          <div class="svc-inner">
+            <div class="svc-face svc-front">
+              <span class="num">05</span>
+              <svg class="ico" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="30" r="3"/><path d="M10 28l7-9 7 5 9-14"/><circle cx="33" cy="10" r="3" fill="currentColor" stroke="none"/></svg>
+              <h3>Producciones</h3>
+              <span class="tap">Ver detalle →</span>
+            </div>
+            <div class="svc-face svc-back">
+              <h3>Producciones</h3>
+              <p>Desde la composición hasta la entrega final de tu máster para EP o álbum.</p>
+            </div>
+          </div>
+        </button>
+
+        <button class="svc-card" aria-pressed="false" data-idx="6">
+          <div class="svc-inner">
+            <div class="svc-face svc-front">
+              <span class="num">06</span>
+              <svg class="ico" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="7" width="8" height="8" rx="1.5"/><rect x="16" y="7" width="8" height="8" rx="1.5"/><rect x="25" y="7" width="8" height="8" rx="1.5"/><rect x="7" y="16" width="8" height="8" rx="1.5"/><rect x="16" y="16" width="8" height="8" rx="1.5" fill="currentColor"/><rect x="25" y="16" width="8" height="8" rx="1.5"/></svg>
+              <h3>Beat Making</h3>
+              <span class="tap">Ver detalle →</span>
+            </div>
+            <div class="svc-face svc-back">
+              <h3>Beat Making</h3>
+              <p>Beats exclusivos o personalizados, construidos desde cero para tu proyecto.</p>
+            </div>
+          </div>
+        </button>
+
+        <button class="svc-card" aria-pressed="false" data-idx="7">
+          <div class="svc-inner">
+            <div class="svc-face svc-front">
+              <span class="num">07</span>
+              <svg class="ico" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="14" y="5" width="12" height="18" rx="6"/><path d="M9 18a11 11 0 0 0 22 0"/><line x1="20" y1="29" x2="20" y2="34"/><path d="M6 12c0 3 1.4 5.4 3 7M34 12c0 3-1.4 5.4-3 7"/></svg>
+              <h3>Podcast</h3>
+              <span class="tap">Ver detalle →</span>
+            </div>
+            <div class="svc-face svc-back">
+              <h3>Grabación de podcast</h3>
+              <p>Grabación multipista para conversaciones y episodios, lista para editar y publicar.</p>
+            </div>
+          </div>
+        </button>
+
+        <button class="svc-card" aria-pressed="false" data-idx="8">
+          <div class="svc-inner">
+            <div class="svc-face svc-front">
+              <span class="num">08</span>
+              <svg class="ico" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="6" y="14" width="28" height="19" rx="2"/><path d="M6 14l4-8h6l-4 8zM17 14l4-8h6l-4 8zM28 14l3-8h3v8"/></svg>
+              <h3>Post audiovisual</h3>
+              <span class="tap">Ver detalle →</span>
+            </div>
+            <div class="svc-face svc-back">
+              <h3>Post audiovisual</h3>
+              <p>Edición y mezcla de audio para video, clips y contenido audiovisual.</p>
+            </div>
+          </div>
+        </button>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="surface-maroon section-pad" id="portafolio">
+    <div class="wrap">
+      <div class="reveal" style="max-width:620px;">
+        <p class="eyebrow">Portafolio</p>
+        <h2 class="h-lg">Algo de lo que<br/>hemos hecho.</h2>
+      </div>
+      <div class="embeds reveal">
+
+        <div class="embed-card">
+          <div class="embed-label">
+            <span class="embed-title">Palenque</span>
+            <span class="embed-artist">Alan Säräs</span>
+          </div>
+          <iframe class="embed-frame" src="https://open.spotify.com/embed/track/7KYnE3dclseuAX5pect1TM?utm_source=generator&theme=0" width="100%" height="152" style="border-radius:12px;" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Reproductor de Spotify — Palenque"></iframe>
+        </div>
+
+        <div class="embed-card">
+          <div class="embed-label">
+            <span class="embed-title">Esta Noche</span>
+            <span class="embed-artist">Ramzy</span>
+          </div>
+          <iframe class="embed-frame" src="https://open.spotify.com/embed/album/7yU2Q7sAuPpaSsdU1claQr?utm_source=generator&theme=0" width="100%" height="152" style="border-radius:12px;" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Reproductor de Spotify — Esta Noche"></iframe>
+        </div>
+
+        <div class="embed-card">
+          <div class="embed-label">
+            <span class="embed-title">Neto — Tec Live Session</span>
+            <span class="embed-artist">Me llamo Neto</span>
+          </div>
+          <audio id="netoAudio" preload="none" src="audio/neto-live-session.mp3"></audio>
+          <div class="listen-row">
+            <button class="btn btn-solid" id="netoPlayBtn" type="button" aria-label="Escuchar Me llamo Neto">
+              <svg class="ic-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l12-7z"/></svg>
+              <svg class="ic-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
+              <span class="listen-label">Escuchar</span>
+            </button>
+            <a class="btn btn-ghost" href="https://youtu.be/pLuaWY0WsTI?t=137" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.5" y="5.5" width="19" height="13" rx="3.5"/><path d="M10.5 9.5v5l4.5-2.5z" fill="currentColor" stroke="none"/></svg>
+              Ver en YouTube
+            </a>
+          </div>
+        </div>
+
+      </div>
+      <p class="portfolio-note">Escucha las pistas completas directo desde Spotify y YouTube.</p>
+    </div>
+  </section>
+
+  <section class="surface-blush section-pad" id="contacto">
+    <div class="wrap">
+      <div class="reveal" style="max-width:620px; margin-bottom:48px;">
+        <p class="eyebrow" style="color:var(--cherry);">Contacto</p>
+        <h2 class="h-lg">Cuéntanos de tu proyecto.</h2>
+      </div>
+      <div class="contact-grid reveal">
+        <form class="reach" id="reachForm" name="contacto-cherry" method="POST" data-netlify="true" netlify-honeypot="empresa">
+          <input type="hidden" name="form-name" value="contacto-cherry" />
+          <input type="hidden" name="subject" id="reachSubject" value="Nuevo contacto - Cherry Studios" />
+          <p style="position:absolute; left:-9999px;" aria-hidden="true">
+            <label>No llenar este campo: <input name="empresa" tabindex="-1" autocomplete="off" /></label>
+          </p>
+          <div class="field">
+            <label for="f-name">Nombre</label>
+            <input id="f-name" name="nombre" type="text" placeholder="¿Cómo te llamas?" required />
+          </div>
+          <div class="field">
+            <label for="f-contact">Correo o teléfono</label>
+            <input id="f-contact" name="contacto" type="text" placeholder="Para responderte" required />
+          </div>
+          <div class="field">
+            <label for="f-servicio">Servicio que buscas</label>
+            <select id="f-servicio" name="servicio">
+              <option>Composición</option>
+              <option>Grabación</option>
+              <option>Mezcla</option>
+              <option>Máster</option>
+              <option>Beat Making</option>
+              <option>Grabación de podcast</option>
+              <option>Post audiovisual</option>
+              <option>Aún no estoy seguro</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="f-msg">Cuéntanos de tu proyecto / maqueta</label>
+            <textarea id="f-msg" name="mensaje" placeholder="Cuéntanos qué tienes en mente…"></textarea>
+          </div>
+          <button type="submit" class="btn btn-dark submit" id="reachSubmitBtn">Enviar mensaje →</button>
+          <p id="reachStatus" style="margin:10px 0 0; font-size:0.9rem; display:none;"></p>
+        </form>
+
+        <div class="direct-card">
+          <a class="direct-row" href="mailto:contacto@cherrystudios.com.mx">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg></span>
+            <span><span class="lbl">Correo</span><br/><span class="val">contacto@cherrystudios.com.mx</span></span>
+          </a>
+          <a class="direct-row" href="https://www.instagram.com/_cherrystudios_/" target="_blank" rel="noopener">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg></span>
+            <span><span class="lbl">Instagram</span><br/><span class="val">@_cherrystudios_</span></span>
+          </a>
+          <p style="margin:0; font-size:0.86rem; color:var(--blush); line-height:1.6;">Tus datos serán tratados por Cherry Studios para contactarte y dar seguimiento a tu solicitud. Consulta nuestro Aviso de Privacidad.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="brand-mini">
+    <img src="images/logo-fused-crudo.png" alt="Cherry Studios" />
+  </div>
+  <div>Ciudad de México · © 2026 Cherry Studios</div>
+  <div style="display:flex; gap:18px;">
+    <a href="mailto:contacto@cherrystudios.com.mx">contacto@cherrystudios.com.mx</a>
+    <a href="https://www.instagram.com/_cherrystudios_/" target="_blank" rel="noopener">@_cherrystudios_</a>
+  </div>
+</footer>
+
+<a class="privacy-pill" href="aviso-de-privacidad.html" target="_blank" rel="noopener">Aviso de privacidad</a>
+
+<script>
+(function(){
+  // ---- nav scroll state ----
+  var navEl = document.getElementById('siteNav');
+  function onScrollNav(){
+    if(window.scrollY > 12){ navEl.classList.add('scrolled'); } else { navEl.classList.remove('scrolled'); }
+  }
+  document.addEventListener('scroll', onScrollNav, {passive:true});
+  onScrollNav();
+
+  // ---- mobile menu ----
+  var burger = document.getElementById('burgerBtn');
+  var menu = document.getElementById('mobileMenu');
+  burger.addEventListener('click', function(){
+    var open = menu.classList.toggle('open');
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  menu.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){ menu.classList.remove('open'); burger.setAttribute('aria-expanded','false'); });
+  });
+
+  // ---- scroll progress rail ----
+  var railFill = document.getElementById('railFill');
+  var railDot = document.getElementById('railDot');
+  var ticking = false;
+  function updateRail(){
+    var doc = document.documentElement;
+    var scrollable = doc.scrollHeight - window.innerHeight;
+    var frac = scrollable > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollable)) : 0;
+    railFill.style.transform = 'scaleY(' + frac + ')';
+    railDot.style.top = (24 + frac * (window.innerHeight - 24 - 80 - 76)) + 'px';
+    ticking = false;
+  }
+  document.addEventListener('scroll', function(){
+    if(!ticking){ requestAnimationFrame(updateRail); ticking = true; }
+  }, {passive:true});
+  window.addEventListener('resize', updateRail);
+  updateRail();
+
+  // ---- scrollspy ----
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll('nav.links a'));
+  var sections = navLinks.map(function(a){ return document.getElementById(a.dataset.sec); }).filter(Boolean);
+  if('IntersectionObserver' in window){
+    var spy = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          var id = entry.target.id;
+          navLinks.forEach(function(a){ a.classList.toggle('active', a.dataset.sec === id); });
+        }
+      });
+    }, {rootMargin:'-45% 0px -50% 0px', threshold:0});
+    sections.forEach(function(s){ spy.observe(s); });
+  }
+
+  // ---- reveal on scroll ----
+  var revealEls = document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    var ro = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('in'); ro.unobserve(e.target); }
+      });
+    }, {threshold:0.12});
+    revealEls.forEach(function(el){ ro.observe(el); });
+  } else {
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+  }
+
+  // ---- hero parallax ----
+  var heroPhoto = document.querySelector('.hero-photo');
+  function parallax(){
+    if(!heroPhoto) return;
+    var y = window.scrollY;
+    if(y < window.innerHeight * 1.2){
+      heroPhoto.style.transform = 'translateY(' + (y * 0.18) + 'px) scale(1.06)';
+    }
+  }
+  document.addEventListener('scroll', parallax, {passive:true});
+  parallax();
+
+  // ---- services flip cards ----
+  document.querySelectorAll('.svc-card').forEach(function(card){
+    card.addEventListener('click', function(){
+      var pressed = card.getAttribute('aria-pressed') === 'true';
+      card.setAttribute('aria-pressed', pressed ? 'false' : 'true');
+    });
+  });
+
+  // ---- Neto track: custom listen button ----
+  (function(){
+    var audio = document.getElementById('netoAudio');
+    var btn = document.getElementById('netoPlayBtn');
+    if(!audio || !btn) return;
+    var playIcon = btn.querySelector('.ic-play');
+    var pauseIcon = btn.querySelector('.ic-pause');
+    var label = btn.querySelector('.listen-label');
+
+    btn.addEventListener('click', function(){
+      if(audio.paused){ audio.play(); } else { audio.pause(); }
+    });
+    audio.addEventListener('play', function(){
+      playIcon.style.display = 'none';
+      pauseIcon.style.display = '';
+      label.textContent = 'Pausar';
+      if(window.__pauseAllExcept) window.__pauseAllExcept('neto');
+    });
+    audio.addEventListener('pause', function(){
+      playIcon.style.display = '';
+      pauseIcon.style.display = 'none';
+      label.textContent = 'Escuchar';
+    });
+  })();
+
+  // ---- contact form -> Netlify Forms (AJAX, sin salir de la página, sin servicio externo) ----
+  var form = document.getElementById('reachForm');
+  var statusEl = document.getElementById('reachStatus');
+  var submitBtn = document.getElementById('reachSubmitBtn');
+  var subjectField = document.getElementById('reachSubject');
+  var nameField = document.getElementById('f-name');
+  var svcField = document.getElementById('f-servicio');
+  var contactoField = document.getElementById('f-contact');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+
+    function showStatus(msg, isError){
+      statusEl.textContent = msg;
+      statusEl.style.display = 'block';
+      statusEl.style.color = isError ? '#b3261e' : 'var(--maroon, #3D0D11)';
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Enviando…';
+
+    if(subjectField){
+      var visitorName = (nameField && nameField.value.trim()) ? nameField.value.trim() : 'Nuevo contacto';
+      var svc = (svcField && svcField.value) ? svcField.value : '';
+      subjectField.value = visitorName + (svc ? ' - ' + svc : '') + ' (sitio web)';
+    }
+
+    // Si lo que puso en "Correo o teléfono" es un correo válido, lo mandamos también
+    // como campo "email" para que Netlify configure el Responder-a automáticamente.
+    if(contactoField){
+      var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      var val = contactoField.value.trim();
+      var existingEmailInput = form.querySelector('input[name="email"]');
+      if(emailRegex.test(val)){
+        if(!existingEmailInput){
+          existingEmailInput = document.createElement('input');
+          existingEmailInput.type = 'hidden';
+          existingEmailInput.name = 'email';
+          form.appendChild(existingEmailInput);
+        }
+        existingEmailInput.value = val;
+      } else if(existingEmailInput){
+        existingEmailInput.parentNode.removeChild(existingEmailInput);
+      }
+    }
+
+    var data = new URLSearchParams(new FormData(form)).toString();
+
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: data
+    }).then(function(response){
+      if(response.ok){
+        showStatus('¡Gracias! Recibimos tu mensaje y te contactaremos pronto.', false);
+        form.reset();
+      } else {
+        showStatus('Hubo un problema al enviar. Por favor escríbenos directo a contacto@cherrystudios.com.mx', true);
+      }
+    }).catch(function(){
+      showStatus('No se pudo enviar. Por favor escríbenos directo a contacto@cherrystudios.com.mx', true);
+    }).finally(function(){
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Enviar mensaje →';
+    });
+  });
+})();
+</script>
+
+<script>
+  window.__spotifyCtrls = [];
+  window.__pauseAllExcept = function(source){
+    (window.__spotifyCtrls || []).forEach(function(c){
+      if(c !== source){ try{ c.pause(); }catch(e){} }
+    });
+    var audio = document.getElementById('netoAudio');
+    if(audio && source !== 'neto' && !audio.paused){ audio.pause(); }
+  };
+  window.onSpotifyIframeApiReady = function(IFrameAPI){
+    function setup(elId, uri){
+      var el = document.getElementById(elId);
+      if(!el) return;
+      IFrameAPI.createController(el, { uri: uri, width: '100%', height: '152' }, function(ctrl){
+        ctrl.__wasPlaying = false;
+        window.__spotifyCtrls.push(ctrl);
+        ctrl.addListener('playback_update', function(e){
+          var isPlaying = e && e.data && e.data.isPaused === false;
+          if(isPlaying && !ctrl.__wasPlaying){
+            ctrl.__wasPlaying = true;
+            window.__pauseAllExcept(ctrl);
+          } else if(!isPlaying){
+            ctrl.__wasPlaying = false;
+          }
+        });
+      });
+    }
+    setup('spotifyEmbedPalenque', 'spotify:track:7KYnE3dclseuAX5pect1TM');
+    setup('spotifyEmbedEstaNoche', 'spotify:album:7yU2Q7sAuPpaSsdU1claQr');
+  };
+</script>
+<script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
+<script>
+(function(){
+  var splash = document.getElementById('splashScreen');
+  var wrap = document.getElementById('splashLogoWrap');
+  var navBrand = document.querySelector('.brand');
+  if(!splash || !wrap || !navBrand){ if(splash) splash.remove(); return; }
+
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if(reduceMotion){
+    splash.remove();
+    return;
+  }
+
+  document.documentElement.style.overflow = 'hidden';
+
+  function finish(){
+    splash.remove();
+    document.documentElement.style.overflow = '';
+  }
+
+  setTimeout(function(){
+    var navRect = navBrand.getBoundingClientRect();
+    var wrapRect = wrap.getBoundingClientRect();
+    if(navRect.width === 0 || wrapRect.width === 0){ splash.classList.add('splash-hide'); setTimeout(finish, 500); return; }
+    var scale = navRect.height / wrapRect.height;
+    var deltaX = (navRect.left + navRect.width / 2) - (wrapRect.left + wrapRect.width / 2);
+    var deltaY = (navRect.top + navRect.height / 2) - (wrapRect.top + wrapRect.height / 2);
+    wrap.style.transform = 'translate(' + deltaX + 'px,' + deltaY + 'px) scale(' + scale + ')';
+    splash.classList.add('splash-hide');
+    setTimeout(finish, 720);
+  }, 650);
+})();
+</script>
+
+</body></html>

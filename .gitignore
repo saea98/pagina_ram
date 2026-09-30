@@ -1,0 +1,41 @@
+# macOS / volúmenes externos
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# Entornos y secretos
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Node / Nuxt
+node_modules/
+.nuxt/
+.output/
+.data/
+dist/
+coverage/
+playwright-report/
+test-results/
+.lighthouseci/
+
+# Editores
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Medios y respaldos locales
+infra/media/
+infra/backups/
+*.log
