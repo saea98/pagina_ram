@@ -1056,7 +1056,7 @@ p.lede {
   color: var(--cream);
 }
 #contacto .btn-dark {
-  background: var(--cherry);
+  background: var(--maroon);
   color: var(--cream);
 }
 #comparar .btn-solid:hover {
@@ -1064,7 +1064,7 @@ p.lede {
   color: var(--cream);
 }
 #contacto .btn-dark:hover {
-  background: var(--maroon);
+  background: var(--cherry);
   color: var(--cream);
 }
 .embed-actions {
