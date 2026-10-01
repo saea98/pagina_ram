@@ -1247,7 +1247,7 @@ form.reach {
   font-size: 0.9rem;
 }
 .direct-card {
-  background: var(--cherry);
+  background: var(--maroon);
   color: var(--cream);
   border: 1.5px solid transparent;
   border-radius: 22px;
@@ -1268,7 +1268,7 @@ form.reach {
   width: 46px;
   height: 46px;
   border-radius: 50%;
-  background: var(--maroon);
+  background: var(--cherry);
   color: var(--cream);
   display: flex;
   align-items: center;
