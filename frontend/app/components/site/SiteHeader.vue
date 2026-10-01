@@ -6,14 +6,13 @@ const open = ref(false)
 const scrolled = ref(false)
 const active = ref('')
 const route = useRoute()
-const solid = computed(() => route.path === '/aviso-de-privacidad')
+const solid = computed(() => ['/aviso-de-privacidad', '/nosotros'].includes(route.path))
 
-const links = [
-  { href: '/#estudio', id: 'estudio', label: 'Estudio' },
-  { href: '/#equipo', id: 'equipo', label: 'Equipo' },
+const links = computed(() => [
   { href: '/#servicios', id: 'servicios', label: 'Servicios' },
   { href: '/#portafolio', id: 'portafolio', label: 'Portafolio' },
-]
+  { href: '/nosotros', id: 'nosotros', label: 'Nosotros' },
+])
 
 function close() {
   open.value = false
@@ -21,17 +20,27 @@ function close() {
 
 let spy: IntersectionObserver | null = null
 
+function sectionIds() {
+  if (route.path === '/') return ['servicios', 'portafolio']
+  return []
+}
+
 function syncSpy() {
   spy?.disconnect()
   spy = null
-  if (route.path !== '/') {
+  if (route.path === '/nosotros') {
+    active.value = 'nosotros'
+    return true
+  }
+  const ids = sectionIds()
+  if (!ids.length) {
     active.value = ''
     return true
   }
   const hash = route.hash.replace('#', '')
-  active.value = links.some((link) => link.id === hash) ? hash : ''
-  const sections = links
-    .map((link) => document.getElementById(link.id))
+  active.value = ids.includes(hash) ? hash : ''
+  const sections = ids
+    .map((id) => document.getElementById(id))
     .filter((section): section is HTMLElement => section !== null)
   if (!sections.length) return false
   spy = new IntersectionObserver(
@@ -63,7 +72,7 @@ watch(
   () => route.fullPath,
   async () => {
     await nextTick()
-    if (!syncSpy() && route.path === '/') requestAnimationFrame(() => syncSpy())
+    if (!syncSpy() && sectionIds().length) requestAnimationFrame(() => syncSpy())
   },
 )
 </script>
@@ -72,7 +81,7 @@ watch(
   <header class="nav" :class="{ scrolled, solid }">
     <div class="nav-inner">
       <NuxtLink class="brand" to="/#inicio">
-        <img src="/brand/logo-color.png" :alt="site?.brand.name || 'Cherry Studios'" />
+        <img src="/brand/logo-wordmark.png" :alt="site?.brand.name || 'Cherry Studios'" />
       </NuxtLink>
       <nav class="links" aria-label="Secciones">
         <NuxtLink

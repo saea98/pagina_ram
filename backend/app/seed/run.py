@@ -215,7 +215,7 @@ async def _ensure_settings(
             },
             "portfolio": {
                 "eyebrow": "Portafolio",
-                "title": "Algo de lo que hemos hecho.",
+                "title": "Algunos de nuestro proyectos.",
                 "note": "Escucha las pistas completas directo desde Spotify y YouTube.",
                 "featured_limit": 4,
             },

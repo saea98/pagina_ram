@@ -41,6 +41,12 @@ function toggle(slug: string) {
           </div>
         </button>
       </div>
+      <div class="svc-more reveal">
+        <NuxtLink class="btn svc-more-btn" to="/#contacto">Cuéntanos más</NuxtLink>
+        <NuxtLink class="svc-more-link" to="/nosotros#equipo"
+          >¿Quieres saber más de nosotros?</NuxtLink
+        >
+      </div>
     </div>
   </section>
 </template>

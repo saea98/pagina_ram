@@ -30,8 +30,6 @@ defineOgImage('OgDefault', {
 <template>
   <main>
     <SiteHomeHero :site="home.site" />
-    <SiteHomeStudio :site="home.site" />
-    <SiteHomeTeam :site="home.site" :team="home.team" />
     <SiteHomeServices :site="home.site" :services="home.services" />
     <SiteHomePortfolio :site="home.site" :portfolio="home.portfolio" />
     <SiteHomeCompare :items="home.ab_comparisons" />

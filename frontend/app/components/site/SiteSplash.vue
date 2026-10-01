@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const splashKey = 'cherry-intro-5'
+const splashKey = 'cherry-intro-6'
 const visible = ref(true)
 const hide = ref(false)
 const wrap = ref<HTMLElement | null>(null)
@@ -68,7 +68,7 @@ onUnmounted(() => {
 <template>
   <div v-if="visible" class="splash" :class="{ 'splash-hide': hide }" aria-hidden="true">
     <div ref="wrap" class="splash-logo">
-      <img src="/brand/logo-color.png" alt="" />
+      <img src="/brand/logo-crudo.png" alt="" />
     </div>
   </div>
 </template>

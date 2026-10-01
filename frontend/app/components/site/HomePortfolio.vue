@@ -27,7 +27,7 @@ function listen(piece: PortfolioCard) {
 </script>
 
 <template>
-  <section id="portafolio" class="surface-maroon section-pad">
+  <section id="portafolio" class="surface-blush section-pad">
     <div class="wrap">
       <div class="reveal">
         <p class="eyebrow">{{ site.portfolio.eyebrow }}</p>
@@ -40,6 +40,11 @@ function listen(piece: PortfolioCard) {
               <span class="embed-title">{{ piece.title }}</span>
               <span class="embed-artist">{{ piece.artist_name }}</span>
             </div>
+            <SitePortfolioPlayStrip
+              v-if="piece.slug === 'neto-tec-live-session'"
+              :piece="piece"
+              art="/portfolio/me-llamo-neto.jpg"
+            />
             <div class="listen-row">
               <button class="btn btn-solid" type="button" @click="listen(piece)">
                 {{ store.current?.id === piece.slug && store.isPlaying ? 'Pausar' : 'Escuchar' }}
