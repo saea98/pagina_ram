@@ -15,7 +15,7 @@ const dot = ref<HTMLElement | null>(null)
 function update() {
   const scrollable = document.documentElement.scrollHeight - window.innerHeight
   const fraction = scrollable > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollable)) : 0
-  if (fill.value) fill.value.style.transform = `scaleY(${fraction})`
+  if (fill.value) fill.value.style.clipPath = `inset(0 0 ${(1 - fraction) * 100}% 0)`
   if (dot.value) {
     dot.value.style.top = `${24 + fraction * (window.innerHeight - 24 - 80 - 76)}px`
   }

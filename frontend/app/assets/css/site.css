@@ -104,8 +104,7 @@ h3 {
   height: calc(100% - 104px);
   background: linear-gradient(var(--cherry-2), var(--cherry));
   border-radius: 2px;
-  transform: scaleY(0);
-  transform-origin: top;
+  clip-path: inset(0 0 100% 0);
 }
 .rail-dot {
   position: absolute;
@@ -789,6 +788,28 @@ p.lede {
   .svc-dots button.on {
     width: 18px;
     background: var(--maroon);
+  }
+}
+@media (min-width: 744px) and (max-width: 839px) {
+  #servicios .svc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    overflow: visible;
+    overscroll-behavior-x: auto;
+    scroll-snap-type: none;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0;
+  }
+  #servicios .svc-card {
+    flex: none;
+    width: 100%;
+    max-width: none;
+    scroll-snap-align: unset;
+  }
+  #servicios .svc-dots {
+    display: none;
   }
 }
 .svc-more {
