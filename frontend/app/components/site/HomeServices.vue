@@ -3,9 +3,35 @@ import type { ServiceCard, Site } from '~/types/public'
 
 defineProps<{ site: Site; services: ServiceCard[] }>()
 const open = ref<Record<string, boolean>>({})
+const grid = ref<HTMLElement | null>(null)
+const activeSlide = ref(0)
 
 function toggle(slug: string) {
   open.value = { ...open.value, [slug]: !open.value[slug] }
+}
+
+function syncSlide() {
+  const el = grid.value
+  if (!el) return
+  const edge = el.getBoundingClientRect().left + 24
+  const cards = [...el.querySelectorAll<HTMLElement>('.svc-card')]
+  let best = 0
+  let bestDist = Infinity
+  cards.forEach((card, index) => {
+    const dist = Math.abs(card.getBoundingClientRect().left - edge)
+    if (dist < bestDist) {
+      best = index
+      bestDist = dist
+    }
+  })
+  activeSlide.value = best
+}
+
+function goTo(index: number) {
+  const el = grid.value
+  const card = el?.querySelectorAll<HTMLElement>('.svc-card')[index]
+  if (!el || !card) return
+  el.scrollTo({ left: card.offsetLeft - 20, behavior: 'smooth' })
 }
 </script>
 
@@ -18,7 +44,7 @@ function toggle(slug: string) {
         <p class="lede">{{ site.services.lede }}</p>
         <p v-if="site.services.hint" class="svc-hint">{{ site.services.hint }}</p>
       </div>
-      <div class="svc-grid">
+      <div ref="grid" class="svc-grid" @scroll.passive="syncSlide">
         <button
           v-for="service in services"
           :key="service.slug"
@@ -41,11 +67,18 @@ function toggle(slug: string) {
           </div>
         </button>
       </div>
+      <div class="svc-dots">
+        <button
+          v-for="(service, index) in services"
+          :key="service.slug"
+          type="button"
+          :class="{ on: activeSlide === index }"
+          :aria-label="service.title"
+          @click="goTo(index)"
+        />
+      </div>
       <div class="svc-more reveal">
         <NuxtLink class="btn svc-more-btn" to="/#contacto">Cuéntanos más</NuxtLink>
-        <NuxtLink class="svc-more-link" to="/nosotros#equipo"
-          >¿Quieres saber más de nosotros?</NuxtLink
-        >
       </div>
     </div>
   </section>

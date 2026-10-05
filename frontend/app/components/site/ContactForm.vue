@@ -28,6 +28,8 @@ const handle = computed(() => {
   const raw = instagram.value.replace(/\/$/, '').split('/').pop() || ''
   return raw.startsWith('@') ? raw : raw ? `@${raw}` : ''
 })
+const emailLocal = computed(() => props.site.contact.email.split('@')[0] || '')
+const emailDomain = computed(() => props.site.contact.email.split('@')[1] || '')
 
 watch(
   () => props.services,
@@ -187,8 +189,8 @@ async function submit() {
           </svg>
         </span>
         <span>
-          <span class="lbl">Correo</span><br />
-          <span class="val">{{ site.contact.email }}</span>
+          <span class="lbl">Correo</span>
+          <span class="val">{{ emailLocal }}@<wbr />{{ emailDomain }}</span>
         </span>
       </a>
       <a v-if="instagram" class="direct-row" :href="instagram" target="_blank" rel="noopener">
@@ -200,7 +202,7 @@ async function submit() {
           </svg>
         </span>
         <span>
-          <span class="lbl">Instagram</span><br />
+          <span class="lbl">Instagram</span>
           <span class="val">{{ handle }}</span>
         </span>
       </a>
