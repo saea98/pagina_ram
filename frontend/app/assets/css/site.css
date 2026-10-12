@@ -355,7 +355,7 @@ main > section + section::before {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 60% 30%;
+  object-position: center 42%;
   will-change: transform;
 }
 .hero-veil {
@@ -374,23 +374,9 @@ main > section + section::before {
 .hero-inner {
   position: relative;
   width: 100%;
-  padding-bottom: 88px;
+  padding-bottom: 148px;
   padding-top: calc(var(--nav-h) + 64px);
   color: var(--cream);
-}
-.hero-quote {
-  font-family: 'Fraunces', serif;
-  font-style: italic;
-  font-weight: 500;
-  font-size: clamp(1.25rem, 2.2vw, 1.55rem);
-  color: var(--blush);
-  margin: 0 0 22px;
-}
-.hero-quote::before {
-  content: '“';
-}
-.hero-quote::after {
-  content: '”';
 }
 h1.hero-h1 {
   font-weight: 600;
@@ -402,7 +388,7 @@ h1.hero-h1 {
 h1.hero-h1 em {
   font-style: italic;
   font-weight: 500;
-  color: var(--blush);
+  color: var(--cherry-2);
 }
 h1.hero-h1 .word {
   display: inline-block;
@@ -651,11 +637,18 @@ p.lede {
   color: var(--cream);
 }
 .founder picture,
-.founder img {
+.founder img,
+.founder-avatar {
   width: 128px;
   height: 128px;
   aspect-ratio: 1;
   flex: none;
+}
+.founder-avatar {
+  display: block;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 0 0 4px var(--paper);
 }
 .founder picture {
   display: block;
@@ -665,6 +658,21 @@ p.lede {
   object-fit: cover;
   object-position: center;
   box-shadow: 0 0 0 4px var(--paper);
+}
+.founder img.founder-photo-chemita,
+.founder img.founder-photo-ramzy {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  box-shadow: none;
+  object-position: center top;
+  transform-origin: center top;
+}
+.founder img.founder-photo-chemita {
+  transform: scale(1.16);
+}
+.founder img.founder-photo-ramzy {
+  transform: scale(1.26);
 }
 .founder h3 {
   font-size: 1.6rem;
@@ -704,7 +712,8 @@ p.lede {
     width: 100%;
   }
   .founder picture,
-  .founder img {
+  .founder img,
+  .founder-avatar {
     width: 104px;
     height: 104px;
   }

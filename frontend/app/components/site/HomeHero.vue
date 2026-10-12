@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import type { Site } from '~/types/public'
 import { splitHeroTitle } from '~/utils/hero'
-import { siteImage } from '~/utils/media'
 
 const props = defineProps<{ site: Site }>()
 const photo = ref<HTMLImageElement | null>(null)
 const words = computed(() => splitHeroTitle(props.site.hero.title_html))
-const image = computed(() => siteImage(props.site, props.site.hero.image_media_id))
 
 function onScroll() {
   const element = photo.value
@@ -25,25 +23,16 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 <template>
   <section id="inicio" class="hero">
     <img
-      v-if="image"
       ref="photo"
       class="hero-photo"
-      :src="image.webp['1600'] || Object.values(image.webp)[0]"
-      :srcset="
-        Object.entries(image.webp)
-          .map(([width, url]) => `${url} ${width}w`)
-          .join(', ')
-      "
-      sizes="100vw"
-      :alt="image.alt || ''"
+      src="/images/estudio-portada-2.jpg"
+      width="1024"
+      height="768"
+      alt="Sala de Cherry Studios con paneles acústicos rojos y negros, monitores y dos sillas frente a la mesa de producción."
       fetchpriority="high"
-      :style="
-        image.lqip ? { backgroundImage: `url(${image.lqip})`, backgroundSize: 'cover' } : undefined
-      "
     />
     <div class="hero-veil" />
     <div class="wrap hero-inner">
-      <p v-if="site.hero.quote" class="hero-quote">{{ site.hero.quote }}</p>
       <h1 class="hero-h1">
         <template v-for="(word, index) in words" :key="index">
           <br v-if="word.breakBefore" />

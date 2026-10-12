@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import type { Site } from '~/types/public'
-import { siteImage } from '~/utils/media'
 
-const props = defineProps<{ site: Site }>()
-const image = computed(() => siteImage(props.site, props.site.studio.image_media_id))
+defineProps<{ site: Site }>()
 </script>
 
 <template>
@@ -15,7 +13,12 @@ const image = computed(() => siteImage(props.site, props.site.studio.image_media
         <p class="lede">{{ site.studio.body }}</p>
       </div>
       <div class="frame reveal">
-        <SiteCherryPicture :image="image" />
+        <img
+          src="/images/estudio-equipo.jpg"
+          width="1024"
+          height="819"
+          alt="Chemita y Ramzy en Cherry Studios, de pie con los brazos cruzados frente a los paneles rojos."
+        />
         <span v-if="site.studio.image_caption" class="frame-tag">{{
           site.studio.image_caption
         }}</span>

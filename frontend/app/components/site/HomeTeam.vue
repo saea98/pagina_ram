@@ -18,7 +18,25 @@ defineProps<{ site: Site; team: TeamCard[] }>()
           class="founder reveal"
           :to="`/equipo/${member.slug}`"
         >
-          <SiteCherryPicture :image="member.photo" class-name="founder-photo" />
+          <span v-if="member.nickname === 'Chemita'" class="founder-avatar">
+            <img
+              class="founder-photo founder-photo-chemita"
+              src="/images/chemita.jpg"
+              width="819"
+              height="1024"
+              alt="Retrato de Alejandro Vega, “Chemita”"
+            />
+          </span>
+          <span v-else-if="member.nickname === 'Ramzy'" class="founder-avatar">
+            <img
+              class="founder-photo founder-photo-ramzy"
+              src="/images/ramzy.jpg"
+              width="818"
+              height="1024"
+              alt="Retrato de Ramsés Jiménez Acosta, “Ramzy”"
+            />
+          </span>
+          <SiteCherryPicture v-else :image="member.photo" class-name="founder-photo" />
           <div>
             <h3>
               {{ member.full_name
