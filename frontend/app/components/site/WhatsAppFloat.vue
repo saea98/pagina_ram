@@ -4,18 +4,14 @@ import type { Site } from '~/types/public'
 const props = withDefaults(defineProps<{ site: Site; variant?: 'float' | 'corner' }>(), {
   variant: 'float',
 })
-const route = useRoute()
 
 const hasNumber = computed(() => Boolean(props.site.contact.whatsapp_e164))
 const visible = computed(() =>
   props.variant === 'corner' ? true : props.site.features.whatsapp_float && hasNumber.value,
 )
 const href = computed(() => {
-  const number = (props.site.contact.whatsapp_e164 || '').replace('+', '')
-  if (!number) return ''
-  const extra = typeof route.params.slug === 'string' ? ` (${route.params.slug})` : ''
-  const text = encodeURIComponent(`${props.site.contact.whatsapp_default_msg}${extra}`.trim())
-  return text ? `https://wa.me/${number}?text=${text}` : `https://wa.me/${number}`
+  const number = (props.site.contact.whatsapp_e164 || '').replace(/\D/g, '')
+  return number ? `https://wa.me/${number}` : ''
 })
 
 const onFoot = ref(false)
