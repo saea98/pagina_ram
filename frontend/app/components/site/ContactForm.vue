@@ -30,6 +30,20 @@ const handle = computed(() => {
 })
 const emailLocal = computed(() => props.site.contact.email.split('@')[0] || '')
 const emailDomain = computed(() => props.site.contact.email.split('@')[1] || '')
+const whatsappDigits = computed(() => (props.site.contact.whatsapp_e164 || '').replace(/\D/g, ''))
+const whatsappHref = computed(() =>
+  whatsappDigits.value ? `https://wa.me/${whatsappDigits.value}` : '',
+)
+const whatsappNumber = computed(() => {
+  const digits = whatsappDigits.value
+  if (digits.length === 12 && digits.startsWith('52')) {
+    return `+52 ${digits.slice(2, 4)} ${digits.slice(4, 8)} ${digits.slice(8)}`
+  }
+  if (digits.length === 10) {
+    return `${digits.slice(0, 2)} ${digits.slice(2, 6)} ${digits.slice(6)}`
+  }
+  return (props.site.contact.whatsapp_e164 || '').trim()
+})
 
 watch(
   () => props.services,
@@ -191,6 +205,20 @@ async function submit() {
         <span>
           <span class="lbl">Correo</span>
           <span class="val">{{ emailLocal }}@<wbr />{{ emailDomain }}</span>
+        </span>
+      </a>
+      <a v-if="whatsappHref" class="direct-row" :href="whatsappHref" target="_blank" rel="noopener">
+        <span class="ic" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 4.2a7.3 7.3 0 0 0-6.3 10.9L4.6 19.4l4.4-1.1A7.3 7.3 0 1 0 12 4.2z" />
+            <path
+              d="M9.1 10.1c.2.7.7 1.6 1.5 2.3.7.6 1.6 1.1 2.3 1.2.3 0 .5-.2.6-.4l.3-.8c.1-.2 0-.4-.2-.5l-.7-.3c-.2-.1-.3 0-.4.2l-.2.3c-.1.1-.2.1-.3 0-.4-.2-.8-.5-1.1-.9-.3-.3-.5-.7-.4-.9l.3-.2c.2-.1.2-.3.1-.4l-.4-.7c-.1-.2-.3-.3-.5-.2l-.8.4c-.3.1-.4.4-.4.7z"
+            />
+          </svg>
+        </span>
+        <span>
+          <span class="lbl">WhatsApp</span>
+          <span class="val">{{ whatsappNumber }}</span>
         </span>
       </a>
       <a v-if="instagram" class="direct-row" :href="instagram" target="_blank" rel="noopener">
