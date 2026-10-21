@@ -1392,6 +1392,26 @@ p.lede {
     line-height: 1.45;
   }
 }
+@media (max-width: 743px) {
+  #contacto .direct-actions {
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+  }
+  #contacto .direct-row {
+    display: flex;
+    width: auto;
+    gap: 0;
+  }
+  #contacto .direct-row > span.ic {
+    display: flex;
+    width: 46px;
+    height: 46px;
+  }
+  #contacto .direct-row > span:last-child {
+    display: none;
+  }
+}
 #contacto h2.h-lg,
 #equipo h2.h-lg {
   text-align: left;
@@ -1551,6 +1571,9 @@ form.reach {
   flex-direction: column;
   gap: 22px;
   justify-content: center;
+}
+.direct-actions {
+  display: contents;
 }
 .direct-row {
   display: flex;

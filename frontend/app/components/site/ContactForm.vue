@@ -195,45 +195,72 @@ async function submit() {
     </form>
 
     <aside class="direct-card">
-      <a class="direct-row" :href="`mailto:${site.contact.email}`">
-        <span class="ic" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <rect x="3" y="5" width="18" height="14" rx="2" />
-            <path d="m4 7 8 6 8-6" />
-          </svg>
-        </span>
-        <span>
-          <span class="lbl">Correo</span>
-          <span class="val">{{ emailLocal }}@<wbr />{{ emailDomain }}</span>
-        </span>
-      </a>
-      <a v-if="whatsappHref" class="direct-row" :href="whatsappHref" target="_blank" rel="noopener">
-        <span class="ic" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M12 4.2a7.3 7.3 0 0 0-6.3 10.9L4.6 19.4l4.4-1.1A7.3 7.3 0 1 0 12 4.2z" />
-            <path
-              d="M9.1 10.1c.2.7.7 1.6 1.5 2.3.7.6 1.6 1.1 2.3 1.2.3 0 .5-.2.6-.4l.3-.8c.1-.2 0-.4-.2-.5l-.7-.3c-.2-.1-.3 0-.4.2l-.2.3c-.1.1-.2.1-.3 0-.4-.2-.8-.5-1.1-.9-.3-.3-.5-.7-.4-.9l.3-.2c.2-.1.2-.3.1-.4l-.4-.7c-.1-.2-.3-.3-.5-.2l-.8.4c-.3.1-.4.4-.4.7z"
-            />
-          </svg>
-        </span>
-        <span>
-          <span class="lbl">WhatsApp</span>
-          <span class="val">{{ whatsappNumber }}</span>
-        </span>
-      </a>
-      <a v-if="instagram" class="direct-row" :href="instagram" target="_blank" rel="noopener">
-        <span class="ic" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <rect x="3" y="3" width="18" height="18" rx="5" />
-            <circle cx="12" cy="12" r="4" />
-            <circle cx="17.2" cy="6.8" r="1" />
-          </svg>
-        </span>
-        <span>
-          <span class="lbl">Instagram</span>
-          <span class="val">{{ handle }}</span>
-        </span>
-      </a>
+      <div class="direct-actions">
+        <a
+          class="direct-row"
+          :href="`mailto:${site.contact.email}`"
+          :aria-label="`Correo, ${site.contact.email}`"
+        >
+          <span class="ic" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="3" y="5" width="18" height="14" rx="2" />
+              <path d="m4 7 8 6 8-6" />
+            </svg>
+          </span>
+          <span>
+            <span class="lbl">Correo</span>
+            <span class="val">{{ emailLocal }}@<wbr />{{ emailDomain }}</span>
+          </span>
+        </a>
+        <a
+          v-if="whatsappHref"
+          class="direct-row"
+          :href="whatsappHref"
+          target="_blank"
+          rel="noopener"
+          :aria-label="`WhatsApp, ${whatsappNumber}`"
+        >
+          <span class="ic" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M12 4.2a7.3 7.3 0 0 0-6.3 10.9L4.6 19.4l4.4-1.1A7.3 7.3 0 1 0 12 4.2z" />
+              <path
+                d="M9.35 11.55c.7-.7 1.15-.55 1.45.05.3.6.15 1.05-.15 1.4.55.35 1.15.7 1.7 1.25.35-.3.8-.45 1.4-.15.6.3.75.75.05 1.45"
+              />
+            </svg>
+          </span>
+          <span>
+            <span class="lbl">WhatsApp</span>
+            <span class="val">{{ whatsappNumber }}</span>
+          </span>
+        </a>
+        <a
+          v-if="instagram"
+          class="direct-row"
+          :href="instagram"
+          target="_blank"
+          rel="noopener"
+          :aria-label="`Instagram, ${handle}`"
+        >
+          <span class="ic" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="3" y="3" width="18" height="18" rx="5" />
+              <circle cx="12" cy="12" r="4" />
+              <circle cx="17.2" cy="6.8" r="1" />
+            </svg>
+          </span>
+          <span>
+            <span class="lbl">Instagram</span>
+            <span class="val">{{ handle }}</span>
+          </span>
+        </a>
+      </div>
       <p class="consent">
         {{ consentCopy.before
         }}<NuxtLink v-if="consentCopy.linked" to="/aviso-de-privacidad"
