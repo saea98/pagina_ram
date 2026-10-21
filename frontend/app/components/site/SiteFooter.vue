@@ -6,6 +6,20 @@ const year = new Date().getFullYear()
 const email = computed(() => props.site?.contact.email || '')
 const instagram = computed(() => props.site?.social.instagram || '')
 const handle = computed(() => instagram.value.replace(/\/$/, '').split('/').pop() || '')
+const whatsappDigits = computed(() => (props.site?.contact.whatsapp_e164 || '').replace(/\D/g, ''))
+const whatsappHref = computed(() =>
+  whatsappDigits.value ? `https://wa.me/${whatsappDigits.value}` : '',
+)
+const whatsappNumber = computed(() => {
+  const digits = whatsappDigits.value
+  if (digits.length === 12 && digits.startsWith('52')) {
+    return `+52 ${digits.slice(2, 4)} ${digits.slice(4, 8)} ${digits.slice(8)}`
+  }
+  if (digits.length === 10) {
+    return `${digits.slice(0, 2)} ${digits.slice(2, 6)} ${digits.slice(6)}`
+  }
+  return (props.site?.contact.whatsapp_e164 || '').trim()
+})
 const socials = computed(() => {
   const social = props.site?.social
   if (!social) return []
@@ -32,6 +46,9 @@ const socials = computed(() => {
       </div>
       <div class="foot-contact">
         <a v-if="instagram" :href="instagram" target="_blank" rel="noopener">@{{ handle }}</a>
+        <a v-if="whatsappHref" :href="whatsappHref" target="_blank" rel="noopener">{{
+          whatsappNumber
+        }}</a>
         <a v-if="email" :href="`mailto:${email}`">{{ email }}</a>
       </div>
     </div>
@@ -45,6 +62,9 @@ const socials = computed(() => {
         <NuxtLink to="/nosotros">Acerca de Nosotros</NuxtLink>
         <NuxtLink to="/#contacto">Contacto</NuxtLink>
         <a v-if="email" :href="`mailto:${email}`">{{ email }}</a>
+        <a v-if="whatsappHref" :href="whatsappHref" target="_blank" rel="noopener">{{
+          whatsappNumber
+        }}</a>
         <a v-if="instagram" :href="instagram" target="_blank" rel="noopener">@{{ handle }}</a>
         <p class="foot-label">Legal</p>
         <NuxtLink to="/aviso-de-privacidad">Aviso de privacidad</NuxtLink>
