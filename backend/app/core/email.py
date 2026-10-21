@@ -45,6 +45,15 @@ async def deliver(payload: dict[str, object]) -> None:
     )
 
 
+def sending_account() -> str | None:
+    settings = get_settings()
+    user = settings.smtp_user.strip()
+    if "@" in user:
+        return user
+    _, address = parseaddr(settings.smtp_from)
+    return address or None
+
+
 def _from_header(name: object, smtp_from: str) -> str:
     _, address = parseaddr(smtp_from)
     if not isinstance(name, str) or not address:

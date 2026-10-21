@@ -18,6 +18,7 @@ class Lead(UUIDPrimaryKeyMixin, TimestampMixin, SoftDeleteMixin, Base):
 
     name: Mapped[str] = mapped_column(Text, nullable=False)
     email: Mapped[str | None] = mapped_column(CITEXT)
+    sent_from: Mapped[str | None] = mapped_column(Text)
     phone_e164: Mapped[str | None] = mapped_column(Text)
     service_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("services.id"))
     message: Mapped[str] = mapped_column(Text, nullable=False)

@@ -31,6 +31,7 @@ def _out(lead: Lead, service_title: str | None) -> LeadAdminOut:
         id=lead.id,
         name=lead.name,
         email=lead.email,
+        sent_from=lead.sent_from,
         phone_e164=lead.phone_e164,
         service_id=lead.service_id,
         service_title=service_title,

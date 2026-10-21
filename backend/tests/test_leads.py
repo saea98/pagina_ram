@@ -100,6 +100,8 @@ async def test_upload_and_notification_email(client: AsyncClient) -> None:
             .where(Job.type == "send_email", Job.status == "queued")
         )
     assert lead is not None
+    assert lead.sent_from
+    assert lead.sent_from != lead.email
     assert lead.demo_media_id is not None
     assert lead.consent_text_version == "2026-08-04"
     assert lead.utm_source == "instagram"

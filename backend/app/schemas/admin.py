@@ -302,6 +302,7 @@ class LeadAdminOut(BaseModel):
     id: UUID
     name: str
     email: str | None
+    sent_from: str | None
     phone_e164: str | None
     service_id: UUID | None
     service_title: str | None

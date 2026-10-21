@@ -6,6 +6,7 @@ from pathlib import Path
 import httpx
 import structlog
 from app.core.config import get_settings
+from app.core.email import sending_account
 from app.core.errors import AppError
 from app.core.ratelimit import client_ip_hash
 from app.core.storage import LocalStorage
@@ -88,6 +89,7 @@ async def create_lead(session: AsyncSession, request: Request, body: LeadIn) -> 
     lead = Lead(
         name=body.name,
         email=body.email,
+        sent_from=sending_account() if body.email else None,
         phone_e164=body.phone,
         service_id=service_id,
         message=body.message,
